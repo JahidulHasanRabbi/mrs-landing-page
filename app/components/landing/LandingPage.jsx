@@ -31,6 +31,22 @@ function MaskIcon({ src, className = "" }) {
   );
 }
 
+// A glossy "shine" glare that sweeps diagonally across its parent every few
+// seconds — the classic CTA shimmer. The parent must be `relative
+// overflow-hidden` so the band is clipped to the button's rounded shape.
+// `delay` offsets multiple shines; MotionConfig pauses it for reduced motion.
+function Shine({ delay = 0 }) {
+  return (
+    <motion.span
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/60 to-transparent"
+      initial={{ x: "-150%" }}
+      animate={{ x: ["-150%", "400%"] }}
+      transition={{ duration: 0.9, ease: "easeInOut", repeat: Infinity, repeatDelay: 2.8, delay }}
+    />
+  );
+}
+
 const mono = "font-[family-name:var(--font-jetbrains-mono)]";
 const sora = "font-[family-name:var(--font-sora)]";
 const goldGlowText = { textShadow: "0px 0px 20px #826e00, 0px 0px 10px #ffd700" };
@@ -80,6 +96,16 @@ const stagger = {
 };
 // Reveal once, when ~a quarter of the element has scrolled into view.
 const inView = { once: true, amount: 0.25 };
+
+// CTA attention-grabber: a quick side-to-side "shake" that fires every few
+// seconds (repeatDelay) rather than constantly, so the Claim/Telegram buttons
+// nudge the eye without being annoying. `delay` offsets the two buttons so they
+// alternate instead of vibrating in unison. MotionConfig pauses it entirely for
+// reduced-motion users.
+const ctaShake = (delay = 0) => ({
+  x: [0, -5, 5, -4, 4, -2, 2, 0],
+  transition: { duration: 0.55, ease: "easeInOut", repeat: Infinity, repeatDelay: 3, delay },
+});
 
 // Scrolling ticker — the text drifts continuously like a headline. Two copies
 // + an x animation of 0 → -50% (one copy width) loops seamlessly. MotionConfig
@@ -436,7 +462,7 @@ function GamesSection() {
             // cards) would otherwise clip them. The zoom is gentler on mobile
             // (1.12× vs 1.35×), so less headroom is needed there; scaling the
             // padding down also keeps the card + description on one screen.
-            className="flex items-center gap-4 py-10 sm:gap-6 sm:py-16 lg:gap-10 lg:py-20"
+            className="flex items-center gap-4 py-4 sm:gap-6 sm:py-6 lg:gap-10 lg:py-20"
             style={{
               transform: `translateX(${offset}px)`,
               transition: animate ? "transform 500ms ease-out" : "none",
@@ -475,7 +501,7 @@ function GamesSection() {
             strokeLinejoin="round"
           />
         </svg>
-        <div className="relative w-full max-w-[413px] overflow-hidden rounded-xl border border-[#ffd700] px-5 py-5 shadow-[inset_-9px_8px_10px_0px_rgba(0,0,0,0.25)] sm:px-10 sm:py-12">
+        <div className="relative w-full max-w-[413px] overflow-hidden rounded-xl border border-[#ffd700] px-5 py-4 shadow-[inset_-9px_8px_10px_0px_rgba(0,0,0,0.25)] sm:px-10 sm:py-12">
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a5205] to-[#051d02]" />
           {/* Re-keying on the active game name remounts this block, so its
            * intro replays each time the carousel advances — the copy resolves
@@ -487,10 +513,10 @@ function GamesSection() {
             transition={{ duration: 0.3, ease: EASE }}
             className="relative flex flex-col gap-1.5 sm:gap-2"
           >
-            <h3 className={`text-xl font-bold text-white sm:text-3xl ${sora}`} style={goldGlowText}>
+            <h3 className={`text-lg font-bold text-white sm:text-3xl ${sora}`} style={goldGlowText}>
               {current.name}
             </h3>
-            <p className="text-sm leading-5 text-[#d0c6ab] font-[family-name:var(--font-inter)] sm:text-base sm:leading-6">
+            <p className="text-xs leading-5 text-[#d0c6ab] font-[family-name:var(--font-inter)] sm:text-base sm:leading-6">
               {current.description}
             </p>
           </motion.div>
@@ -542,20 +568,24 @@ function PartnerCard({ partner }) {
             href={partner.claimUrl}
             target="_blank"
             rel="noopener noreferrer"
+            animate={ctaShake(0)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            className={`flex flex-1 items-center justify-center rounded-lg border border-[#6a5b0a] bg-[#ffd700] py-3 text-xs font-extrabold tracking-[1.2px] text-[#3a3000] ${mono}`}
+            className={`relative flex flex-1 items-center justify-center overflow-hidden rounded-lg border border-[#6a5b0a] bg-[#ffd700] py-3 text-xs font-extrabold tracking-[1.2px] text-[#3a3000] ${mono}`}
           >
+            <Shine delay={0} />
             Claim Now
           </motion.a>
           <motion.a
             href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
+            animate={ctaShake(0.4)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            className={`flex flex-1 items-center justify-center gap-1 rounded-lg border border-[#30ccdd] bg-[#1592a0] px-6 py-3 text-xs font-extrabold tracking-[1.2px] text-[#ebebeb] ${mono}`}
+            className={`relative flex flex-1 items-center justify-center gap-1 overflow-hidden rounded-lg border border-[#30ccdd] bg-[#1592a0] px-6 py-3 text-xs font-extrabold tracking-[1.2px] text-[#ebebeb] ${mono}`}
           >
+            <Shine delay={1.4} />
             <MaskIcon src="/assets/landing/icons/ph-telegram-logo-duotone.svg" className="size-4" />
             Telegram
           </motion.a>
