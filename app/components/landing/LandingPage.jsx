@@ -571,7 +571,7 @@ function PartnerCard({ partner }) {
             animate={ctaShake(0)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            className={`relative flex flex-1 items-center justify-center overflow-hidden rounded-lg border border-[#6a5b0a] bg-[#ffd700] py-3 text-xs font-extrabold tracking-[1.2px] text-[#3a3000] ${mono}`}
+            className={`relative flex min-w-0 flex-1 items-center justify-center overflow-hidden whitespace-nowrap rounded-lg border border-[#6a5b0a] bg-[#ffd700] px-3 py-3 text-xs font-extrabold tracking-[1.2px] text-[#3a3000] ${mono}`}
           >
             <Shine delay={0} />
             Claim Now
@@ -583,7 +583,7 @@ function PartnerCard({ partner }) {
             animate={ctaShake(0.4)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            className={`relative flex flex-1 items-center justify-center gap-1 overflow-hidden rounded-lg border border-[#30ccdd] bg-[#1592a0] px-6 py-3 text-xs font-extrabold tracking-[1.2px] text-[#ebebeb] ${mono}`}
+            className={`relative flex min-w-0 flex-1 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-lg border border-[#30ccdd] bg-[#1592a0] px-3 py-3 text-xs font-extrabold tracking-[1.2px] text-[#ebebeb] ${mono}`}
           >
             <Shine delay={1.4} />
             <MaskIcon src="/assets/landing/icons/ph-telegram-logo-duotone.svg" className="size-4" />
