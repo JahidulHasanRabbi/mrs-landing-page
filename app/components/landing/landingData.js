@@ -64,31 +64,12 @@ export const PARTNERS = [
   { name: "N1gang", logo: "/assets/landing/partner-n1gang.png", claimUrl: "https://n1gang.net/RFA27808A91" },
 ];
 
+// Footer / dropdown navigation. Each entry maps a label to its route; the routes
+// are the legal/info pages built from the source content document.
 export const FOOTER_LINKS = [
-  "Privacy Policy",
-  "Terms of Service",
-  "Responsible Gaming",
-  "Affiliate Program",
-  "FAQ",
-];
-
-// A small, fixed sprinkle of gold motes for the background. Positions are
-// hardcoded (percentages) rather than randomized so SSR and client render match.
-export const BG_DOTS = [
-  { top: "4%", left: "27%", size: 5, opacity: 0.47 },
-  { top: "9%", left: "70%", size: 4, opacity: 0.26 },
-  { top: "14%", left: "13%", size: 3, opacity: 0.5 },
-  { top: "18%", left: "68%", size: 4, opacity: 0.14 },
-  { top: "24%", left: "10%", size: 5, opacity: 0.36 },
-  { top: "30%", left: "59%", size: 5, opacity: 0.38 },
-  { top: "37%", left: "85%", size: 3, opacity: 0.32 },
-  { top: "43%", left: "23%", size: 4, opacity: 0.48 },
-  { top: "52%", left: "68%", size: 5, opacity: 0.28 },
-  { top: "58%", left: "46%", size: 4, opacity: 0.42 },
-  { top: "64%", left: "80%", size: 3, opacity: 0.22 },
-  { top: "71%", left: "17%", size: 5, opacity: 0.42 },
-  { top: "77%", left: "57%", size: 5, opacity: 0.38 },
-  { top: "83%", left: "40%", size: 4, opacity: 0.29 },
-  { top: "88%", left: "84%", size: 4, opacity: 0.32 },
-  { top: "92%", left: "26%", size: 3, opacity: 0.19 },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms-of-service" },
+  { label: "Responsible Gaming", href: "/responsible-gaming" },
+  { label: "Affiliate Program", href: "/affiliate-program" },
+  { label: "FAQ", href: "/faq" },
 ];

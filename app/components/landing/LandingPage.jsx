@@ -2,228 +2,26 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { AnimatePresence, MotionConfig, motion } from "framer-motion";
-import { VIP_TIERS, GAMES, PARTNERS, FOOTER_LINKS, BG_DOTS, TELEGRAM_URL } from "./landingData";
+import { MotionConfig, motion } from "framer-motion";
+import { VIP_TIERS, GAMES, PARTNERS, TELEGRAM_URL } from "./landingData";
+import {
+  mono,
+  sora,
+  goldGlowText,
+  EASE,
+  fadeUp,
+  heroTitle,
+  popIn,
+  stagger,
+  inView,
+  ctaShake,
+} from "../shared/motion";
+import { MaskIcon, Shine, SiteHeader, SiteFooter, PageBackground } from "../shared/SiteChrome";
 
 // useLayoutEffect on the client (so the carousel recenters before paint, which
 // keeps the infinite-loop snap invisible) but falls back to useEffect on the
 // server to avoid React's SSR warning.
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
-
-/* Inline-mask icon: the Iconify SVGs use currentColor, so masking with
- * `bg-current` lets each icon inherit its parent's text color. */
-function MaskIcon({ src, className = "" }) {
-  return (
-    <span
-      aria-hidden="true"
-      className={`block shrink-0 bg-current ${className}`}
-      style={{
-        WebkitMaskImage: `url(${src})`,
-        maskImage: `url(${src})`,
-        WebkitMaskRepeat: "no-repeat",
-        maskRepeat: "no-repeat",
-        WebkitMaskPosition: "center",
-        maskPosition: "center",
-        WebkitMaskSize: "contain",
-        maskSize: "contain",
-      }}
-    />
-  );
-}
-
-// A glossy "shine" glare that sweeps diagonally across its parent every few
-// seconds — the classic CTA shimmer. The parent must be `relative
-// overflow-hidden` so the band is clipped to the button's rounded shape.
-// `delay` offsets multiple shines; MotionConfig pauses it for reduced motion.
-function Shine({ delay = 0 }) {
-  return (
-    <motion.span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 left-0 w-1/3 -skew-x-12 bg-gradient-to-r from-transparent via-white/60 to-transparent"
-      initial={{ x: "-150%" }}
-      animate={{ x: ["-150%", "400%"] }}
-      transition={{ duration: 0.9, ease: "easeInOut", repeat: Infinity, repeatDelay: 2.8, delay }}
-    />
-  );
-}
-
-const mono = "font-[family-name:var(--font-jetbrains-mono)]";
-const sora = "font-[family-name:var(--font-sora)]";
-const goldGlowText = { textShadow: "0px 0px 20px #826e00, 0px 0px 10px #ffd700" };
-
-const EASE = [0.22, 1, 0.36, 1]; // expo-out (an ease-out) — entrances land soft
-
-// On-load entrance — intentionally BIG and clearly choreographed (the user
-// wants a noticeable hero moment, not a subtle one). Still transform/opacity +
-// a single headline blur so it stays 60fps; MotionConfig honours reduced-motion.
-const fadeUp = {
-  hidden: { opacity: 0, y: 44 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.65, ease: EASE } },
-};
-// Showpiece headline: a large rise + scale-up out of a heavy blur, paired with a
-// gold shimmer that sweeps across the letters (the backgroundPosition travel).
-const heroTitle = {
-  hidden: {
-    opacity: 0,
-    y: 64,
-    scale: 0.88,
-    filter: "blur(18px)",
-    backgroundPosition: "160% 0%",
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    scale: 1,
-    filter: "blur(0px)",
-    backgroundPosition: "-60% 0%",
-    transition: { duration: 1.1, ease: EASE },
-  },
-};
-// Dramatic spring pop with real overshoot — badges/logo punch in from small.
-const popIn = {
-  hidden: { opacity: 0, scale: 0.2, y: 24 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { type: "spring", stiffness: 260, damping: 12, mass: 0.8 },
-  },
-};
-// A visible cascade (≈130ms apart) so you actually watch items arrive in order.
-const stagger = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.13, delayChildren: 0.2 } },
-};
-// Reveal once, when ~a quarter of the element has scrolled into view.
-const inView = { once: true, amount: 0.25 };
-
-// CTA attention-grabber: a quick side-to-side "shake" that fires every few
-// seconds (repeatDelay) rather than constantly, so the Claim/Telegram buttons
-// nudge the eye without being annoying. `delay` offsets the two buttons so they
-// alternate instead of vibrating in unison. MotionConfig pauses it entirely for
-// reduced-motion users.
-const ctaShake = (delay = 0) => ({
-  x: [0, -5, 5, -4, 4, -2, 2, 0],
-  transition: { duration: 0.55, ease: "easeInOut", repeat: Infinity, repeatDelay: 3, delay },
-});
-
-// Scrolling ticker — the text drifts continuously like a headline. Two copies
-// + an x animation of 0 → -50% (one copy width) loops seamlessly. MotionConfig
-// pauses it for reduced-motion users.
-function Ticker({ className = "" }) {
-  return (
-    <div className={`relative overflow-hidden ${className}`}>
-      <motion.div
-        className="flex w-max whitespace-nowrap"
-        animate={{ x: ["0%", "-50%"] }}
-        transition={{ duration: 18, ease: "linear", repeat: Infinity }}
-      >
-        {[0, 1].map((copy) => (
-          <span
-            key={copy}
-            aria-hidden={copy === 1 || undefined}
-            className={`pr-16 text-sm font-bold tracking-[1.2px] text-[#ffd700] ${mono}`}
-          >
-            Spin, score, predict, and win exciting rewards on KingGroup44!
-          </span>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
-function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  // Close the menu on Escape for keyboard users.
-  useEffect(() => {
-    if (!menuOpen) return;
-    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [menuOpen]);
-
-  return (
-    <motion.header
-      initial={{ y: "-100%", opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.45, ease: EASE }}
-      className="sticky top-0 z-20 w-full shadow-[0px_4px_6px_-1px_rgba(0,0,0,0.1)]"
-    >
-      <div className="absolute inset-0 bg-gradient-to-r from-[#041502] to-[#1e5119]" />
-      <div className="pointer-events-none absolute inset-0 shadow-[inset_0px_0px_24px_0px_black]" />
-      <div className="relative mx-auto max-w-[1440px] px-4 py-3 sm:px-6 lg:px-10">
-        <div className="flex items-center gap-4 sm:gap-6">
-          <Image
-            src="/assets/landing/logo.png"
-            alt="KingGroup44"
-            width={800}
-            height={300}
-            priority
-            style={{ width: "auto" }}
-            className="h-16 w-auto sm:h-20"
-          />
-          {/* Desktop: ticker sits inline between the logo and the menu. */}
-          <Ticker className="hidden flex-1 md:block" />
-          <button
-            type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            aria-controls="site-menu"
-            onClick={() => setMenuOpen((v) => !v)}
-            className="relative z-30 ml-auto grid size-10 place-items-center text-[#ffd700] md:ml-0"
-          >
-            <MaskIcon src="/assets/landing/icons/pajamas-hamburger.svg" className="size-7" />
-          </button>
-        </div>
-        {/* Mobile: no room inline next to the logo, so the ticker gets its own
-         * full-width row beneath the logo/menu. */}
-        <Ticker className="mt-2 md:hidden" />
-
-        {/* Dropdown menu (footer links). A transparent full-screen catcher closes
-         * it on any outside click; the panel itself drops in from the top-right. */}
-        <AnimatePresence>
-          {menuOpen && (
-            <>
-              <motion.button
-                type="button"
-                aria-label="Close menu"
-                tabIndex={-1}
-                onClick={() => setMenuOpen(false)}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-10 cursor-default"
-              />
-              <motion.nav
-                id="site-menu"
-                initial={{ opacity: 0, y: -8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.2, ease: EASE }}
-                className="absolute right-4 top-full z-20 mt-2 w-56 overflow-hidden rounded-xl border-2 border-[rgba(170,141,39,0.8)] bg-gradient-to-b from-[#041502] to-[#0c3a0a] shadow-[0px_8px_24px_rgba(0,0,0,0.5)] sm:right-6 lg:right-10"
-              >
-                <ul className="flex flex-col py-2">
-                  {FOOTER_LINKS.map((link) => (
-                    <li key={link}>
-                      <a
-                        href="#"
-                        onClick={() => setMenuOpen(false)}
-                        className={`block px-5 py-3 text-sm font-bold tracking-[1px] text-[#d0c6ab] transition-colors hover:bg-[rgba(255,215,0,0.08)] hover:text-[#ffd700] ${mono}`}
-                      >
-                        {link}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </motion.nav>
-            </>
-          )}
-        </AnimatePresence>
-      </div>
-    </motion.header>
-  );
-}
 
 function Hero() {
   return (
@@ -683,48 +481,6 @@ function PartnersSection() {
   );
 }
 
-function Footer() {
-  return (
-    <footer className="w-full border-t border-[rgba(77,71,50,0.2)] bg-[#010c00]">
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={inView}
-        variants={stagger}
-        className="mx-auto flex max-w-[1440px] flex-col items-center gap-6 px-4 py-16 sm:px-6 sm:py-20 lg:px-10"
-      >
-        <motion.div variants={fadeUp}>
-          <Image
-            src="/assets/landing/logo.png"
-            alt="KingGroup44"
-            width={800}
-            height={300}
-            style={{ width: "auto" }}
-            className="h-20 w-auto"
-          />
-        </motion.div>
-        <motion.nav
-          variants={fadeUp}
-          className="flex flex-wrap items-center justify-center gap-x-10 gap-y-3 pb-6"
-        >
-          {FOOTER_LINKS.map((link) => (
-            <a
-              key={link}
-              href="#"
-              className={`text-xs font-bold tracking-[1.2px] text-[#999077] transition-colors hover:text-[#ffd700] ${mono}`}
-            >
-              {link}
-            </a>
-          ))}
-        </motion.nav>
-        <motion.p variants={fadeUp} className={`text-center text-base text-[#999077] ${sora}`}>
-          © 2026 KingGroup44. High-Stakes Digital Entertainment.
-        </motion.p>
-      </motion.div>
-    </footer>
-  );
-}
-
 export default function LandingPage() {
   return (
     <MotionConfig reducedMotion="user">
@@ -732,38 +488,14 @@ export default function LandingPage() {
      * the header's `position: sticky`. Horizontal-overflow clipping lives on the
      * background-motes layer (and the individual sections) instead. */}
       <div className="relative isolate min-h-screen w-full bg-[#020b01]">
-        {/* Background gradient + gold motes */}
-        <div
-          className="pointer-events-none absolute inset-0 -z-10"
-          style={{
-            background:
-              "radial-gradient(120% 80% at 50% 0%, #0a3406 0%, #052003 35%, #021001 65%, #000000 100%)",
-          }}
-        />
-        <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-          {BG_DOTS.map((dot, i) => (
-            <motion.span
-              key={i}
-              className="absolute rounded-full bg-gradient-to-b from-[#ffd000] to-[#997d00]"
-              style={{ top: dot.top, left: dot.left, width: dot.size, height: dot.size }}
-              animate={{ opacity: [dot.opacity * 0.35, dot.opacity, dot.opacity * 0.35] }}
-              transition={{
-                duration: 3 + (i % 4),
-                repeat: Infinity,
-                ease: "easeInOut",
-                delay: (i % 5) * 0.4,
-              }}
-            />
-          ))}
-        </div>
-
-        <Header />
+        <PageBackground />
+        <SiteHeader />
         <main className="flex w-full flex-col items-center">
           <Hero />
           <GamesSection />
           <PartnersSection />
         </main>
-        <Footer />
+        <SiteFooter />
       </div>
     </MotionConfig>
   );
