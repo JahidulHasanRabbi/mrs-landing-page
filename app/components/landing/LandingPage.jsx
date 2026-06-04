@@ -317,24 +317,24 @@ function GameCard({ game, isActive, onSelect }) {
       type="button"
       onClick={onSelect}
       aria-current={isActive || undefined}
-      className={`flex shrink-0 flex-col items-center gap-4 outline-none transition-transform duration-500 ease-out ${isActive ? "z-10 scale-[1.35]" : "scale-90 opacity-90"
+      className={`flex shrink-0 flex-col items-center gap-3 outline-none transition-transform duration-500 ease-out sm:gap-4 ${isActive ? "z-10 scale-[1.12] lg:scale-[1.35]" : "scale-90 opacity-90"
         }`}
     >
       <div
-        className={`relative h-[300px] w-[180px] overflow-hidden rounded-2xl transition-shadow duration-500 sm:h-[315px] sm:w-[225px] ${isActive
+        className={`relative h-[220px] w-[150px] overflow-hidden rounded-2xl transition-shadow duration-500 sm:h-[315px] sm:w-[225px] ${isActive
             ? "border-2 border-[#ffd700] shadow-[0px_0px_10px_0px_#ffd700,0px_0px_24px_0px_#826e00]"
             : ""
           }`}
       >
         <Image src={game.img} alt={game.name} fill sizes="265px" className="object-cover" />
         {isActive && (
-          <span className="absolute inset-x-3 bottom-3 rounded-full bg-[#ffd700] px-6 py-3 text-center text-base font-bold text-[#3a3000] drop-shadow-[0px_0px_15px_rgba(255,215,0,0.5)] sm:text-lg">
+          <span className="absolute inset-x-3 bottom-3 rounded-full bg-[#ffd700] px-4 py-2.5 text-center text-sm font-bold text-[#3a3000] drop-shadow-[0px_0px_15px_rgba(255,215,0,0.5)] sm:px-6 sm:py-3 sm:text-lg">
             <span className={sora}>Play Now</span>
           </span>
         )}
       </div>
       <span
-        className={`text-center text-xl font-bold uppercase tracking-[2.7px] text-[#d1caa7] ${mono}`}
+        className={`text-center text-base font-bold uppercase tracking-[1.5px] text-[#d1caa7] sm:text-xl sm:tracking-[2.7px] ${mono}`}
         style={GAME_TITLE_GLOW}
       >
         {game.name}
@@ -419,7 +419,7 @@ function GamesSection() {
       whileInView="visible"
       viewport={inView}
       variants={stagger}
-      className="flex w-full flex-col items-center gap-2 overflow-hidden py-10"
+      className="flex w-full flex-col items-center gap-2 overflow-hidden py-6 sm:py-10"
     >
       <motion.div variants={fadeUp} className="w-full">
         <div
@@ -431,10 +431,12 @@ function GamesSection() {
           <div
             ref={trackRef}
             onTransitionEnd={handleTransitionEnd}
-            // Vertical padding must clear the *scaled* active card (1.35×) plus its
-            // label — the viewport's overflow-hidden (which hides the off-screen
-            // loop cards) would otherwise clip them. py-20 leaves headroom.
-            className="flex items-center gap-6 py-20 lg:gap-10"
+            // Vertical padding must clear the *scaled* active card plus its label
+            // — the viewport's overflow-hidden (which hides the off-screen loop
+            // cards) would otherwise clip them. The zoom is gentler on mobile
+            // (1.12× vs 1.35×), so less headroom is needed there; scaling the
+            // padding down also keeps the card + description on one screen.
+            className="flex items-center gap-4 py-10 sm:gap-6 sm:py-16 lg:gap-10 lg:py-20"
             style={{
               transform: `translateX(${offset}px)`,
               transition: animate ? "transform 500ms ease-out" : "none",
@@ -473,7 +475,7 @@ function GamesSection() {
             strokeLinejoin="round"
           />
         </svg>
-        <div className="relative w-full max-w-[413px] overflow-hidden rounded-xl border border-[#ffd700] px-8 py-10 shadow-[inset_-9px_8px_10px_0px_rgba(0,0,0,0.25)] sm:px-10 sm:py-12">
+        <div className="relative w-full max-w-[413px] overflow-hidden rounded-xl border border-[#ffd700] px-5 py-5 shadow-[inset_-9px_8px_10px_0px_rgba(0,0,0,0.25)] sm:px-10 sm:py-12">
           <div className="absolute inset-0 bg-gradient-to-b from-[#0a5205] to-[#051d02]" />
           {/* Re-keying on the active game name remounts this block, so its
            * intro replays each time the carousel advances — the copy resolves
@@ -483,12 +485,12 @@ function GamesSection() {
             initial={{ opacity: 0, y: 10, filter: "blur(6px)" }}
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.3, ease: EASE }}
-            className="relative flex flex-col gap-2"
+            className="relative flex flex-col gap-1.5 sm:gap-2"
           >
-            <h3 className={`text-3xl font-bold text-white ${sora}`} style={goldGlowText}>
+            <h3 className={`text-xl font-bold text-white sm:text-3xl ${sora}`} style={goldGlowText}>
               {current.name}
             </h3>
-            <p className="text-base leading-6 text-[#d0c6ab] font-[family-name:var(--font-inter)]">
+            <p className="text-sm leading-5 text-[#d0c6ab] font-[family-name:var(--font-inter)] sm:text-base sm:leading-6">
               {current.description}
             </p>
           </motion.div>
