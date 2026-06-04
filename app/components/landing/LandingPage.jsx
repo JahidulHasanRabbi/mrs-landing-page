@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { MotionConfig, motion } from "framer-motion";
+import { AnimatePresence, MotionConfig, motion } from "framer-motion";
 import { VIP_TIERS, GAMES, PARTNERS, FOOTER_LINKS, BG_DOTS, TELEGRAM_URL } from "./landingData";
 
 // useLayoutEffect on the client (so the carousel recenters before paint, which
@@ -133,6 +133,16 @@ function Ticker({ className = "" }) {
 }
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  // Close the menu on Escape for keyboard users.
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKey = (e) => e.key === "Escape" && setMenuOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [menuOpen]);
+
   return (
     <motion.header
       initial={{ y: "-100%", opacity: 0 }}
@@ -157,8 +167,11 @@ function Header() {
           <Ticker className="hidden flex-1 md:block" />
           <button
             type="button"
-            aria-label="Open menu"
-            className="ml-auto grid size-10 place-items-center text-[#ffd700] md:ml-0"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            aria-controls="site-menu"
+            onClick={() => setMenuOpen((v) => !v)}
+            className="relative z-30 ml-auto grid size-10 place-items-center text-[#ffd700] md:ml-0"
           >
             <MaskIcon src="/assets/landing/icons/pajamas-hamburger.svg" className="size-7" />
           </button>
@@ -166,6 +179,47 @@ function Header() {
         {/* Mobile: no room inline next to the logo, so the ticker gets its own
          * full-width row beneath the logo/menu. */}
         <Ticker className="mt-2 md:hidden" />
+
+        {/* Dropdown menu (footer links). A transparent full-screen catcher closes
+         * it on any outside click; the panel itself drops in from the top-right. */}
+        <AnimatePresence>
+          {menuOpen && (
+            <>
+              <motion.button
+                type="button"
+                aria-label="Close menu"
+                tabIndex={-1}
+                onClick={() => setMenuOpen(false)}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-10 cursor-default"
+              />
+              <motion.nav
+                id="site-menu"
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.2, ease: EASE }}
+                className="absolute right-4 top-full z-20 mt-2 w-56 overflow-hidden rounded-xl border-2 border-[rgba(170,141,39,0.8)] bg-gradient-to-b from-[#041502] to-[#0c3a0a] shadow-[0px_8px_24px_rgba(0,0,0,0.5)] sm:right-6 lg:right-10"
+              >
+                <ul className="flex flex-col py-2">
+                  {FOOTER_LINKS.map((link) => (
+                    <li key={link}>
+                      <a
+                        href="#"
+                        onClick={() => setMenuOpen(false)}
+                        className={`block px-5 py-3 text-sm font-bold tracking-[1px] text-[#d0c6ab] transition-colors hover:bg-[rgba(255,215,0,0.08)] hover:text-[#ffd700] ${mono}`}
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </motion.nav>
+            </>
+          )}
+        </AnimatePresence>
       </div>
     </motion.header>
   );
