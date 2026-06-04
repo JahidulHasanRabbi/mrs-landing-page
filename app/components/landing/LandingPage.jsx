@@ -81,6 +81,31 @@ const stagger = {
 // Reveal once, when ~a quarter of the element has scrolled into view.
 const inView = { once: true, amount: 0.25 };
 
+// Scrolling ticker — the text drifts continuously like a headline. Two copies
+// + an x animation of 0 → -50% (one copy width) loops seamlessly. MotionConfig
+// pauses it for reduced-motion users.
+function Ticker({ className = "" }) {
+  return (
+    <div className={`relative overflow-hidden ${className}`}>
+      <motion.div
+        className="flex w-max whitespace-nowrap"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+      >
+        {[0, 1].map((copy) => (
+          <span
+            key={copy}
+            aria-hidden={copy === 1 || undefined}
+            className={`pr-16 text-sm font-bold tracking-[1.2px] text-[#ffd700] ${mono}`}
+          >
+            Spin, score, predict, and win exciting rewards on KingGroup44!
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 function Header() {
   return (
     <motion.header
@@ -91,43 +116,30 @@ function Header() {
     >
       <div className="absolute inset-0 bg-gradient-to-r from-[#041502] to-[#1e5119]" />
       <div className="pointer-events-none absolute inset-0 shadow-[inset_0px_0px_24px_0px_black]" />
-      <div className="relative mx-auto flex max-w-[1440px] items-center gap-4 px-4 py-3 sm:gap-6 sm:px-6 lg:px-10">
-        <Image
-          src="/assets/landing/logo.png"
-          alt="KingGroup44"
-          width={800}
-          height={300}
-          priority
-          style={{ width: "auto" }}
-          className="h-12 w-auto sm:h-16"
-        />
-        {/* Scrolling ticker — the text drifts continuously like a headline.
-         * Two copies + an x animation of 0 → -50% (one copy width) loops
-         * seamlessly. MotionConfig pauses it for reduced-motion users. */}
-        <div className="relative hidden flex-1 overflow-hidden md:block">
-          <motion.div
-            className="flex w-max whitespace-nowrap"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+      <div className="relative mx-auto max-w-[1440px] px-4 py-3 sm:px-6 lg:px-10">
+        <div className="flex items-center gap-4 sm:gap-6">
+          <Image
+            src="/assets/landing/logo.png"
+            alt="KingGroup44"
+            width={800}
+            height={300}
+            priority
+            style={{ width: "auto" }}
+            className="h-16 w-auto sm:h-20"
+          />
+          {/* Desktop: ticker sits inline between the logo and the menu. */}
+          <Ticker className="hidden flex-1 md:block" />
+          <button
+            type="button"
+            aria-label="Open menu"
+            className="ml-auto grid size-10 place-items-center text-[#ffd700] md:ml-0"
           >
-            {[0, 1].map((copy) => (
-              <span
-                key={copy}
-                aria-hidden={copy === 1 || undefined}
-                className={`pr-16 text-sm font-bold tracking-[1.2px] text-[#ffd700] ${mono}`}
-              >
-                Spin, score, predict, and win exciting rewards on KingGroup44!
-              </span>
-            ))}
-          </motion.div>
+            <MaskIcon src="/assets/landing/icons/pajamas-hamburger.svg" className="size-7" />
+          </button>
         </div>
-        <button
-          type="button"
-          aria-label="Open menu"
-          className="ml-auto grid size-10 place-items-center text-[#ffd700] md:ml-0"
-        >
-          <MaskIcon src="/assets/landing/icons/pajamas-hamburger.svg" className="size-7" />
-        </button>
+        {/* Mobile: no room inline next to the logo, so the ticker gets its own
+         * full-width row beneath the logo/menu. */}
+        <Ticker className="mt-2 md:hidden" />
       </div>
     </motion.header>
   );
@@ -156,7 +168,7 @@ function Hero() {
               width={800}
               height={300}
               priority
-              className="h-12 w-12 rounded-full object-contain"
+              className="h-20 w-20 rounded-full object-contain"
             />
           </motion.div>
           <span
@@ -190,6 +202,30 @@ function Hero() {
 
       <VipTierBar />
     </section>
+  );
+}
+
+// A single VIP badge tile (shield + label). Shared between the mobile
+// auto-sliding marquee and the desktop evenly-spaced row. The shield PNGs are
+// transparent, so a `drop-shadow` filter makes the gold glow hug the silhouette
+// (matching Figma) instead of the square halo a box-shadow would produce.
+function BadgeTile({ tier, className = "" }) {
+  return (
+    <div
+      className={`flex w-[76px] shrink-0 flex-col items-center gap-1 sm:w-[110px] lg:w-auto ${className}`}
+    >
+      <div
+        className="relative size-12 sm:size-16 lg:size-20"
+        style={{ filter: "drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 16px rgba(255,215,0,0.5))" }}
+      >
+        <Image src={tier.img} alt={tier.name} fill sizes="80px" className="object-contain" />
+      </div>
+      <span
+        className={`text-[10px] font-bold tracking-[0.5px] text-[#ffd700] sm:text-xs sm:tracking-[1.2px] ${mono}`}
+      >
+        {tier.name}
+      </span>
+    </div>
   );
 }
 
@@ -236,34 +272,35 @@ function VipTierBar() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 rounded-[9999px] shadow-[inset_-2px_9px_15.2px_0px_rgba(59,176,48,0.19)]"
         />
+        {/* Mobile/tablet: a continuous auto-sliding marquee so it's obvious the
+         * badges can scroll (a static overflow row gave no hint there was more
+         * off-screen). Two identical copies + an x animation of 0 → -50% loop
+         * seamlessly; the per-tile horizontal padding keeps the seam gap even.
+         * MotionConfig pauses it for reduced-motion users. */}
+        <div className="relative overflow-hidden py-4 sm:py-6 lg:hidden">
+          <motion.div
+            className="flex w-max"
+            animate={{ x: ["0%", "-50%"] }}
+            transition={{ duration: 18, ease: "linear", repeat: Infinity }}
+          >
+            {[0, 1].map((copy) => (
+              <div key={copy} aria-hidden={copy === 1 || undefined} className="flex shrink-0">
+                {VIP_TIERS.map((tier) => (
+                  <BadgeTile key={tier.name} tier={tier} className="px-2.5 sm:px-3" />
+                ))}
+              </div>
+            ))}
+          </motion.div>
+        </div>
+
+        {/* Desktop: all tiers fit, so spread them evenly with the pop-in cascade. */}
         <motion.div
           variants={stagger}
-          className="scrollbar-hide relative flex items-center justify-start gap-1 overflow-x-auto px-3 py-4 sm:gap-4 sm:px-4 sm:py-6 lg:justify-between"
+          className="relative hidden items-center justify-between px-4 py-6 lg:flex"
         >
           {VIP_TIERS.map((tier) => (
-            <motion.div
-              key={tier.name}
-              variants={popIn}
-              className="flex w-[76px] shrink-0 flex-col items-center gap-1 sm:w-[110px] lg:w-auto"
-            >
-              {/* The shield PNGs are transparent, so a `drop-shadow` filter
-               * makes the gold glow hug the shield silhouette (matching Figma's
-               * shape-aware effect) instead of the square halo a box-shadow
-               * would produce. */}
-              <div
-                className="relative size-12 sm:size-16 lg:size-20"
-                style={{
-                  filter:
-                    "drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 16px rgba(255,215,0,0.5))",
-                }}
-              >
-                <Image src={tier.img} alt={tier.name} fill sizes="80px" className="object-contain" />
-              </div>
-              <span
-                className={`text-[10px] font-bold tracking-[0.5px] text-[#ffd700] sm:text-xs sm:tracking-[1.2px] ${mono}`}
-              >
-                {tier.name}
-              </span>
+            <motion.div key={tier.name} variants={popIn} className="flex flex-col items-center">
+              <BadgeTile tier={tier} />
             </motion.div>
           ))}
         </motion.div>
@@ -341,6 +378,13 @@ function GamesSection() {
     return () => window.removeEventListener("resize", recenter);
   }, [recenter]);
 
+  // Pause auto-advance only for an actual mouse hover. We deliberately avoid
+  // onMouseEnter/Leave here: on touch devices a tap fires a sticky mouseenter
+  // with no matching mouseleave, which left `paused` stuck true and silently
+  // killed the auto-slide on mobile after the first tap.
+  const pauseForMouse = (e) => e.pointerType === "mouse" && setPaused(true);
+  const resumeForMouse = (e) => e.pointerType === "mouse" && setPaused(false);
+
   // Auto-advance one card at a time (the "pop"). Pauses on hover and is
   // disabled entirely for users who prefer reduced motion.
   useEffect(() => {
@@ -381,8 +425,8 @@ function GamesSection() {
         <div
           ref={viewportRef}
           className="w-full overflow-hidden"
-          onMouseEnter={() => setPaused(true)}
-          onMouseLeave={() => setPaused(false)}
+          onPointerEnter={pauseForMouse}
+          onPointerLeave={resumeForMouse}
         >
           <div
             ref={trackRef}
@@ -570,7 +614,7 @@ function Footer() {
             width={800}
             height={300}
             style={{ width: "auto" }}
-            className="h-16 w-auto"
+            className="h-20 w-auto"
           />
         </motion.div>
         <motion.nav
