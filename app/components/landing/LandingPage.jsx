@@ -163,7 +163,7 @@ function Hero() {
             style={{ filter: "drop-shadow(0 0 18px rgba(255,215,0,0.55))" }}
           >
             <Image
-              src="/assets/landing/logo.png"
+              src="/assets/landing/icons/King-logo.png"
               alt=""
               width={800}
               height={300}
