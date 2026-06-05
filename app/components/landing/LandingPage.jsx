@@ -389,8 +389,8 @@ function PartnerCard({ partner }) {
       <div className="relative flex flex-col gap-6">
         {/* Logo + name */}
         <div className="flex flex-col items-center gap-4">
-          <div className="relative size-16">
-            <Image src={partner.logo} alt={partner.name} fill sizes="64px" className="object-contain" />
+          <div className="relative size-28 sm:size-32">
+            <Image src={partner.logo} alt={partner.name} fill sizes="128px" className="object-contain drop-shadow-[0px_0px_12px_rgba(84,233,138,0.45)]" />
           </div>
           <h3 className={`text-2xl font-bold text-white ${sora}`}>{partner.name}</h3>
         </div>
