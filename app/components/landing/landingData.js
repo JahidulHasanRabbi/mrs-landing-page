@@ -64,6 +64,11 @@ export const PARTNERS = [
   { name: "N1gang", logo: "/assets/landing/partner-n1gang.png", claimUrl: "https://n1gang.net/RFA27808A91" },
 ];
 
+// Destinations for the game carousel's "Play Now" button — it opens one of these
+// at random on each click. Derived from PARTNERS so there's a single source of
+// truth for the referral links.
+export const PLAY_NOW_LINKS = PARTNERS.map((p) => p.claimUrl);
+
 // Footer / dropdown navigation. Each entry maps a label to its route; the routes
 // are the legal/info pages built from the source content document.
 export const FOOTER_LINKS = [

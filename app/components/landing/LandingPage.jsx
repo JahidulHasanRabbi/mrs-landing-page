@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { MotionConfig, motion } from "framer-motion";
-import { VIP_TIERS, GAMES, PARTNERS, TELEGRAM_URL } from "./landingData";
+import { VIP_TIERS, GAMES, PARTNERS, TELEGRAM_URL, PLAY_NOW_LINKS } from "./landingData";
 import {
   mono,
   sora,
@@ -197,11 +197,13 @@ function VipTierBar() {
 
 const GAME_TITLE_GLOW = { textShadow: "0px 0px 15px #826e00, 0px 0px 7.5px #ffd700" };
 
-function GameCard({ game, isActive, onSelect, instant = false }) {
+function GameCard({ game, isActive, onSelect, onPlay, instant = false }) {
   return (
     <button
       type="button"
-      onClick={onSelect}
+      // A side card just centers itself; the centered card (which shows the
+      // "Play Now" pill) launches a random partner link instead.
+      onClick={isActive ? onPlay : onSelect}
       aria-current={isActive || undefined}
       // `instant` kills the scale/glow transitions during the loop's invisible
       // copy-snap. Because the snap moves "active" to a different DOM node, an
@@ -306,6 +308,13 @@ function GamesSection() {
 
   const current = GAMES[active % GAMES_N];
 
+  // "Play Now" sends the player to a random partner referral link. Chosen at
+  // click time (client-only) so there's no SSR/hydration mismatch.
+  const openRandomPlayLink = () => {
+    const url = PLAY_NOW_LINKS[Math.floor(Math.random() * PLAY_NOW_LINKS.length)];
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
   return (
     <motion.section
       initial="hidden"
@@ -342,6 +351,7 @@ function GamesSection() {
                 isActive={i === active}
                 instant={!animate}
                 onSelect={() => setActive(i)}
+                onPlay={openRandomPlayLink}
               />
             ))}
           </div>
