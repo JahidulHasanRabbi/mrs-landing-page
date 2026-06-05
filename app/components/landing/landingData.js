@@ -2,15 +2,15 @@
 // Kept separate from the component so copy/asset edits don't touch layout code.
 
 export const VIP_TIERS = [
-  { name: "Bronze", img: "/assets/landing/badge-bronze.png" },
-  { name: "Silver", img: "/assets/landing/badge-silver.png" },
-  { name: "Gold", img: "/assets/landing/badge-gold.png" },
-  { name: "Platinum", img: "/assets/landing/badge-platinum.png" },
-  { name: "Diamond", img: "/assets/landing/badge-diamond.png" },
-  { name: "Emerald", img: "/assets/landing/badge-emerald.png" },
-  { name: "Ruby", img: "/assets/landing/badge-ruby.png" },
-  { name: "Sapphire", img: "/assets/landing/badge-sapphire.png" },
-  { name: "Amethyst", img: "/assets/landing/badge-amethyst.png" },
+  { name: "Bronze", img: "/assets/landing/vip-tiers-icons/1.png" },
+  { name: "Silver", img: "/assets/landing/vip-tiers-icons/2.png" },
+  { name: "Gold", img: "/assets/landing/vip-tiers-icons/3.png" },
+  { name: "Platinum", img: "/assets/landing/vip-tiers-icons/4.png" },
+  { name: "Diamond", img: "/assets/landing/vip-tiers-icons/5.png" },
+  { name: "Emerald", img: "/assets/landing/vip-tiers-icons/6.png" },
+  { name: "Ruby", img: "/assets/landing/vip-tiers-icons/7.png" },
+  { name: "Sapphire", img: "/assets/landing/vip-tiers-icons/8.png" },
+  { name: "Amethyst", img: "/assets/landing/vip-tiers-icons/9.png" },
 ];
 
 export const GAMES = [

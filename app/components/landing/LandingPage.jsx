@@ -91,16 +91,24 @@ function Hero() {
 function BadgeTile({ tier, className = "" }) {
   return (
     <div
-      className={`flex w-[76px] shrink-0 flex-col items-center gap-1 sm:w-[110px] lg:w-auto ${className}`}
+      className={`group flex w-[76px] shrink-0 cursor-pointer flex-col items-center gap-1 sm:w-[110px] lg:w-auto ${className}`}
     >
-      <div
+      <motion.div
         className="relative size-12 sm:size-16 lg:size-20"
         style={{ filter: "drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 16px rgba(255,215,0,0.5))" }}
+        whileHover={{
+          scale: 1.18,
+          y: -8,
+          filter:
+            "drop-shadow(0 0 14px #ffd700) drop-shadow(0 0 30px rgba(255,215,0,0.85))",
+        }}
+        whileTap={{ scale: 1.08 }}
+        transition={{ type: "spring", stiffness: 320, damping: 18 }}
       >
         <Image src={tier.img} alt={tier.name} fill sizes="80px" className="object-contain" />
-      </div>
+      </motion.div>
       <span
-        className={`text-[10px] font-bold tracking-[0.5px] text-[#ffd700] sm:text-xs sm:tracking-[1.2px] ${mono}`}
+        className={`text-[10px] font-bold tracking-[0.5px] text-[#ffd700] transition-[text-shadow,transform] duration-300 group-hover:scale-105 group-hover:[text-shadow:0_0_8px_rgba(255,215,0,0.9)] sm:text-xs sm:tracking-[1.2px] ${mono}`}
       >
         {tier.name}
       </span>
