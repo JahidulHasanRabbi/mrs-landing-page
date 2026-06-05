@@ -56,9 +56,9 @@ export const GAMES = [
 export const TELEGRAM_URL = "https://t.me/imlvyhere";
 
 export const PARTNERS = [
-  { name: "Kgame99", logo: "/assets/landing/partner-kgame99.png", claimUrl: "https://kgame99.com/RFA27807719" },
-  { name: "LV918", logo: "/assets/landing/partner-lv918.png", claimUrl: "https://lv918.com/RFA27808136" },
-  { name: "Ubetclub", logo: "/assets/landing/partner-ubetclub.png", claimUrl: "https://ubetclub.com/RFA27808309" },
+  { name: "Kgame99", logo: "/assets/landing/partner-kgame99.png", claimUrl: "https://kgame99.com/RFA27807719", bigLogo: true },
+  { name: "LV918", logo: "/assets/landing/partner-lv918.png", claimUrl: "https://lv918.com/RFA27808136", bigLogo: true },
+  { name: "Ubetclub", logo: "/assets/landing/partner-ubetclub.png", claimUrl: "https://ubetclub.com/RFA27808309", bigLogo: true },
   { name: "EP369", logo: "/assets/landing/partner-ep369.png", claimUrl: "https://ep369.me/RFA27807A91" },
   { name: "Acebet77", logo: "/assets/landing/partner-acebet77.png", claimUrl: "https://acebet77.me/RFA27807081" },
   { name: "N1gang", logo: "/assets/landing/partner-n1gang.png", claimUrl: "https://n1gang.net/RFA27808A91" },

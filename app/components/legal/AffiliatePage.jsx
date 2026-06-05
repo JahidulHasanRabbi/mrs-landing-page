@@ -121,13 +121,13 @@ export default function AffiliatePage() {
           <p className={`text-[15px] text-[#d8d0b8] ${inter}`}>{A.contact.intro}</p>
           <div className="flex flex-col items-center gap-1.5">
             <a
-              href={`mailto:${A.contact.email}`}
+              href={A.contact.telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`text-base font-bold text-[#ffd700] underline decoration-[rgba(255,215,0,0.4)] underline-offset-2 hover:text-[#ffe86d] ${mono}`}
             >
-              {A.contact.email}
+              Telegram — {A.contact.telegram}
             </a>
-            <span className={`text-sm text-[#9fdf9a] ${mono}`}>Telegram — {A.contact.telegram}</span>
-            <span className={`text-sm text-[#9fdf9a] ${mono}`}>Apply — {A.contact.apply}</span>
           </div>
           <p className={`text-sm italic text-[#cfc6ab] ${inter}`}>{A.contact.hours}</p>
         </div>

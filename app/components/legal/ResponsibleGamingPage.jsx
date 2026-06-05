@@ -155,10 +155,12 @@ export default function ResponsibleGamingPage() {
           <p className={`max-w-[520px] text-[15px] leading-7 text-[#d8d0b8] ${inter}`}>{R.help.intro}</p>
           <div className="flex flex-col gap-2">
             <a
-              href={`mailto:${R.help.email}`}
+              href={R.help.telegramUrl}
+              target="_blank"
+              rel="noopener noreferrer"
               className={`text-base font-bold text-[#ffd700] underline decoration-[rgba(255,215,0,0.4)] underline-offset-2 hover:text-[#ffe86d] ${mono}`}
             >
-              {R.help.email}
+              Telegram — {R.help.telegram}
             </a>
             <span className={`text-sm text-[#9fdf9a] ${mono}`}>Live Chat — {R.help.chat}</span>
           </div>

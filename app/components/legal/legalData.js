@@ -13,6 +13,11 @@
 
 const UPDATED = "Last updated: June 2025";
 
+// Sole contact channel surfaced on the public pages — all contact callouts and
+// blocks point here instead of email / phone / postal address.
+export const TELEGRAM_URL = "https://t.me/imlvyhere";
+const TELEGRAM_HANDLE = "@imlvyhere";
+
 /* ----------------------------------------------------------------- Privacy -- */
 
 export const PRIVACY = {
@@ -31,11 +36,11 @@ export const PRIVACY = {
         {
           p: "KingGroup44 is operated by [Company Legal Name], a company registered under the laws of [Jurisdiction], with company registration number [XXXXXXXX] and registered address at [Full Address]. We hold a gaming license issued by [Licensing Authority], License No. [XXXXXXXX].",
         },
-        { p: "For any privacy-related inquiries, contact our Data Protection Officer at:" },
+        { p: "For any privacy-related inquiries, contact our Data Protection Officer via Telegram:" },
         {
           callout: {
             lines: [
-              { label: "Data Protection Officer", value: "privacy@kinggroup44.com", href: "mailto:privacy@kinggroup44.com" },
+              { label: "Telegram", value: TELEGRAM_HANDLE, href: TELEGRAM_URL },
             ],
           },
         },
@@ -185,7 +190,7 @@ export const PRIVACY = {
           ],
         },
         {
-          p: "To exercise any of these rights, contact us at privacy@kinggroup44.com. We will respond within 30 days.",
+          p: "To exercise any of these rights, contact us on Telegram at @imlvyhere. We will respond within 30 days.",
         },
       ],
     },
@@ -214,12 +219,11 @@ export const PRIVACY = {
       n: 13,
       title: "Contact Us",
       blocks: [
-        { p: "For any questions or concerns regarding this Privacy Policy, contact:" },
+        { p: "For any questions or concerns regarding this Privacy Policy, contact us on Telegram:" },
         {
           callout: {
             lines: [
-              { label: "Email", value: "privacy@kinggroup44.com", href: "mailto:privacy@kinggroup44.com" },
-              { label: "Address", value: "[Full Registered Address]" },
+              { label: "Telegram", value: TELEGRAM_HANDLE, href: TELEGRAM_URL },
             ],
           },
         },
@@ -375,7 +379,7 @@ export const TERMS = {
       n: 10,
       title: "Governing Law and Dispute Resolution",
       blocks: [
-        { p: "These Terms shall be governed by and construed in accordance with the laws of [Jurisdiction]. Any disputes shall first be directed to our customer support team at support@kinggroup44.com. If unresolved, disputes may be escalated to the relevant licensing authority or an independent alternative dispute resolution (ADR) body." },
+        { p: "These Terms shall be governed by and construed in accordance with the laws of [Jurisdiction]. Any disputes shall first be directed to our customer support team on Telegram at @imlvyhere. If unresolved, disputes may be escalated to the relevant licensing authority or an independent alternative dispute resolution (ADR) body." },
       ],
     },
     {
@@ -400,8 +404,7 @@ export const TERMS = {
         {
           callout: {
             lines: [
-              { label: "Email", value: "support@kinggroup44.com", href: "mailto:support@kinggroup44.com" },
-              { label: "Address", value: "[Full Registered Address]" },
+              { label: "Telegram", value: TELEGRAM_HANDLE, href: TELEGRAM_URL },
             ],
           },
         },
@@ -450,7 +453,7 @@ export const RESPONSIBLE = {
       "You will not receive any marketing communications",
       "You will not be able to create a new account",
     ],
-    outro: "To activate self-exclusion, contact us at responsible@kinggroup44.com or use the option in your account settings. We take self-exclusion requests very seriously and process them without delay.",
+    outro: "To activate self-exclusion, contact us on Telegram at @imlvyhere or use the option in your account settings. We take self-exclusion requests very seriously and process them without delay.",
   },
   underage: {
     title: "Underage Gambling Prevention",
@@ -461,7 +464,7 @@ export const RESPONSIBLE = {
       { name: "Net Nanny", url: "https://netnanny.com", display: "netnanny.com" },
       { name: "Betfilter", url: "https://betfilter.com", display: "betfilter.com" },
     ],
-    outro: "If you suspect that a minor has accessed your account, contact us immediately at support@kinggroup44.com.",
+    outro: "If you suspect that a minor has accessed your account, contact us immediately on Telegram at @imlvyhere.",
   },
   support: {
     title: "Support Organizations",
@@ -477,7 +480,8 @@ export const RESPONSIBLE = {
   help: {
     title: "Need Help Right Now?",
     intro: "If you need immediate assistance, please contact our Responsible Gaming team:",
-    email: "responsible@kinggroup44.com",
+    telegram: TELEGRAM_HANDLE,
+    telegramUrl: TELEGRAM_URL,
     chat: "Available 24/7 within your account",
     closing: "We are here to help, without judgment.",
   },
@@ -532,7 +536,7 @@ export const AFFILIATE = {
     ],
   },
   steps: [
-    { b: "Apply", t: "Complete the affiliate application form at affiliates.kinggroup44.com with your contact details, website, and traffic sources." },
+    { b: "Apply", t: "Message us on Telegram at @imlvyhere with your contact details, website, and traffic sources to start your application." },
     { b: "Review", t: "Our affiliate team reviews your application within 2–5 business days. We evaluate traffic quality, compliance, and fit." },
     { b: "Approval", t: "Once approved, you receive access to your affiliate dashboard, tracking links, and creative materials." },
     { b: "Promote", t: "Start driving traffic using your unique tracking links, banners, and landing pages." },
@@ -605,9 +609,8 @@ export const AFFILIATE = {
   contact: {
     title: "Get in Touch",
     intro: "Ready to join or have a question before applying?",
-    email: "affiliates@kinggroup44.com",
-    telegram: "@KingGroup44Affiliates",
-    apply: "affiliates.kinggroup44.com",
+    telegram: TELEGRAM_HANDLE,
+    telegramUrl: TELEGRAM_URL,
     hours: "Our affiliate team is available Monday to Friday, 09:00 – 18:00 (UTC).",
   },
 };
@@ -628,7 +631,7 @@ export const FAQ = {
         { q: "How do I verify my account?", a: 'Go to your account settings and navigate to the "Verification" section. Upload a valid government-issued photo ID and a proof of address document dated within the last 3 months. Verification is usually completed within 24 hours.' },
         { q: "Why do I need to verify my identity?", a: "Identity verification is a legal requirement under anti-money laundering (AML) regulations and is in place to protect both you and the integrity of our platform. It is required before your first withdrawal." },
         { q: "How do I update my personal details?", a: "Some details (such as name and date of birth) cannot be changed once verified. For other details, visit your account settings or contact our support team." },
-        { q: "How do I close my account?", a: "Contact our support team at support@kinggroup44.com to request account closure. Your remaining balance will be refunded after verification is complete." },
+        { q: "How do I close my account?", a: "Contact our support team on Telegram at @imlvyhere to request account closure. Your remaining balance will be refunded after verification is complete." },
       ],
     },
     {
@@ -672,22 +675,22 @@ export const FAQ = {
         { q: "Can I play for free?", a: "Many of our slots and table games are available in demo mode, allowing you to play without wagering real money. Live casino games require a real-money account." },
         { q: "What should I do if a game freezes or crashes?", a: "Close the game and reopen it. Your session and balance will be restored to where it was. If you were in the middle of a spin or hand, the game will resume from the last valid state. Contact support if the issue persists." },
         { q: "Is the platform available on mobile?", a: "Yes. KingGroup44 is fully optimized for mobile play on both iOS and Android devices through your mobile browser. No download is required." },
-        { q: "What do I do if I experience a technical issue?", a: "Contact our support team via live chat or email at support@kinggroup44.com and provide as much detail as possible, including the game name, time of the issue, and your account username." },
+        { q: "What do I do if I experience a technical issue?", a: "Contact our support team via live chat or on Telegram at @imlvyhere and provide as much detail as possible, including the game name, time of the issue, and your account username." },
       ],
     },
     {
       category: "Responsible Gaming",
       items: [
         { q: "How do I set deposit or loss limits?", a: "Go to Account Settings > Responsible Gaming. From there, you can set daily, weekly, or monthly limits on deposits, losses, and wagers." },
-        { q: "How do I self-exclude?", a: "Contact our support team at responsible@kinggroup44.com or use the Self-Exclusion option in your account settings. Self-exclusion takes effect immediately." },
+        { q: "How do I self-exclude?", a: "Contact our support team on Telegram at @imlvyhere or use the Self-Exclusion option in your account settings. Self-exclusion takes effect immediately." },
         { q: "What happens during self-exclusion?", a: "Your account will be immediately suspended, you will be removed from all marketing lists, and you will not be able to create a new account during the exclusion period." },
-        { q: "Where can I get help for a gambling problem?", a: "Please visit our Responsible Gaming page for a list of free, confidential support organizations available in your region. You can also contact our team at responsible@kinggroup44.com at any time." },
+        { q: "Where can I get help for a gambling problem?", a: "Please visit our Responsible Gaming page for a list of free, confidential support organizations available in your region. You can also contact our team on Telegram at @imlvyhere at any time." },
       ],
     },
     {
       category: "Contact & Support",
       items: [
-        { q: "How can I contact KingGroup44?", a: "Live Chat — available 24/7 from within your account. Email — support@kinggroup44.com. Response time: live chat is instant; email responses within 24 hours." },
+        { q: "How can I contact KingGroup44?", a: "Live Chat — available 24/7 from within your account. Telegram — @imlvyhere. Response time: live chat is instant; Telegram responses within 24 hours." },
         { q: "In what languages is support available?", a: "Our support team is available in [list languages]. Please specify your preferred language when you get in touch." },
         { q: "Where can I find more information about your licensing?", a: "Our licensing information is displayed in the footer of our website. You can verify our license at any time via the licensing authority's official website." },
       ],
