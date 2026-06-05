@@ -16,7 +16,7 @@ const inter = "font-[family-name:var(--font-inter)]";
 // `eyebrow` shows above the title; `updated`/`tagline` show below it.
 export function ContentPage({ title, eyebrow = "KingGroup44", updated, tagline, children }) {
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="never">
       <div className="relative isolate min-h-screen w-full bg-[#020b01]">
         <PageBackground />
         <SiteHeader />

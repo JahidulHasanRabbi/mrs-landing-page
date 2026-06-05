@@ -162,8 +162,7 @@ function VipTierBar() {
         {/* Mobile/tablet: a continuous auto-sliding marquee so it's obvious the
          * badges can scroll (a static overflow row gave no hint there was more
          * off-screen). Two identical copies + an x animation of 0 → -50% loop
-         * seamlessly; the per-tile horizontal padding keeps the seam gap even.
-         * MotionConfig pauses it for reduced-motion users. */}
+         * seamlessly; the per-tile horizontal padding keeps the seam gap even. */}
         <div className="relative overflow-hidden py-4 sm:py-6 lg:hidden">
           <motion.div
             className="flex w-max"
@@ -500,7 +499,7 @@ function PartnersSection() {
 
 export default function LandingPage() {
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="never">
       {/* No `overflow-hidden` here: it would create a scroll container and break
      * the header's `position: sticky`. Horizontal-overflow clipping lives on the
      * background-motes layer (and the individual sections) instead. */}
