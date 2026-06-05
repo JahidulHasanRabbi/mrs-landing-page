@@ -198,17 +198,21 @@ function VipTierBar() {
 
 const GAME_TITLE_GLOW = { textShadow: "0px 0px 15px #826e00, 0px 0px 7.5px #ffd700" };
 
-function GameCard({ game, isActive, onSelect }) {
+function GameCard({ game, isActive, onSelect, instant = false }) {
   return (
     <button
       type="button"
       onClick={onSelect}
       aria-current={isActive || undefined}
-      className={`flex shrink-0 flex-col items-center gap-3 outline-none transition-transform duration-500 ease-out sm:gap-4 ${isActive ? "z-10 scale-[1.12] lg:scale-[1.35]" : "scale-90 opacity-90"
+      // `instant` kills the scale/glow transitions during the loop's invisible
+      // copy-snap. Because the snap moves "active" to a different DOM node, an
+      // enabled transition would visibly animate the snapped card up from
+      // scale-90/no-border to its active size + glow — the loop-point glitch.
+      className={`flex shrink-0 flex-col items-center gap-3 outline-none sm:gap-4 ${instant ? "" : "transition-transform duration-500 ease-out"} ${isActive ? "z-10 scale-[1.12] lg:scale-[1.35]" : "scale-90 opacity-90"
         }`}
     >
       <div
-        className={`relative h-[220px] w-[150px] overflow-hidden rounded-2xl transition-shadow duration-500 sm:h-[315px] sm:w-[225px] ${isActive
+        className={`relative h-[220px] w-[150px] overflow-hidden rounded-2xl sm:h-[315px] sm:w-[225px] ${instant ? "" : "transition-shadow duration-500"} ${isActive
             ? "border-2 border-[#ffd700] shadow-[0px_0px_10px_0px_#ffd700,0px_0px_24px_0px_#826e00]"
             : ""
           }`}
@@ -274,12 +278,15 @@ function GamesSection() {
 
   // Auto-advance one card at a time (the "pop"). Pauses on hover and is
   // disabled entirely for users who prefer reduced motion.
+  // Depending on `active` restarts the countdown after every slide — including
+  // a manual card tap — so a click never lands right before a queued auto-tick
+  // and double-advances. Each slide is followed by a fresh 2600ms.
   useEffect(() => {
     if (paused) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => setActive((i) => i + 1), 2600);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [paused, active]);
 
   // After an animated move finishes, if we've landed in an outer copy, jump
   // invisibly to the matching index in the middle copy (same on-screen pixels).
@@ -334,6 +341,7 @@ function GamesSection() {
                 key={i}
                 game={game}
                 isActive={i === active}
+                instant={!animate}
                 onSelect={() => setActive(i)}
               />
             ))}
