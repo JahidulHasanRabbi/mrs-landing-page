@@ -277,14 +277,17 @@ function GamesSection() {
   const pauseForMouse = (e) => e.pointerType === "mouse" && setPaused(true);
   const resumeForMouse = (e) => e.pointerType === "mouse" && setPaused(false);
 
-  // Auto-advance one card at a time (the "pop"). Pauses on hover and is
-  // disabled entirely for users who prefer reduced motion.
+  // Auto-advance one card at a time (the "pop"). Pauses on hover only.
+  // We intentionally do NOT gate this on prefers-reduced-motion: the page
+  // wraps everything in <MotionConfig reducedMotion="never">, so the carousel
+  // must keep sliding to stay consistent. Honoring reduce-motion here (it's
+  // commonly on via iOS Low Power Mode / accessibility) silently froze the
+  // carousel on phones.
   // Depending on `active` restarts the countdown after every slide — including
   // a manual card tap — so a click never lands right before a queued auto-tick
   // and double-advances. Each slide is followed by a fresh 2600ms.
   useEffect(() => {
     if (paused) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const id = setInterval(() => setActive((i) => i + 1), 2600);
     return () => clearInterval(id);
   }, [paused, active]);
