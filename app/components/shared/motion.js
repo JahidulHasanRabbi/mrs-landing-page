@@ -65,6 +65,12 @@ export const staggerTight = {
 // Reveal once, when ~a quarter of the element has scrolled into view.
 export const inView = { once: true, amount: 0.25 };
 
+// For containers taller than the viewport (e.g. a grid that stacks into a tall
+// column on mobile): `amount: 0.25` would never be reached until you scroll to
+// the bottom, leaving the content hidden. `amount: "some"` fires as soon as the
+// top edge enters view.
+export const inViewTall = { once: true, amount: "some" };
+
 // CTA attention-grabber: a quick side-to-side "shake" that fires every few
 // seconds (repeatDelay) rather than constantly. `delay` offsets paired buttons.
 export const ctaShake = (delay = 0) => ({

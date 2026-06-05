@@ -14,6 +14,7 @@ import {
   popIn,
   stagger,
   inView,
+  inViewTall,
   ctaShake,
 } from "../shared/motion";
 import { MaskIcon, Shine, SiteHeader, SiteFooter, PageBackground } from "../shared/SiteChrome";
@@ -469,7 +470,7 @@ function PartnersSection() {
       <motion.div
         initial="hidden"
         whileInView="visible"
-        viewport={inView}
+        viewport={inViewTall}
         variants={stagger}
         className="grid w-full max-w-[1360px] grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
       >
