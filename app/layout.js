@@ -1,5 +1,6 @@
 import { Inter, JetBrains_Mono, Sora } from "next/font/google";
 import "./globals.css";
+import { siteUrl } from "./siteUrl";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -17,8 +18,6 @@ const sora = Sora({
   subsets: ["latin"],
   weight: ["400", "700", "800"],
 });
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://kinggroup44.com";
 
 export const metadata = {
   metadataBase: new URL(siteUrl),

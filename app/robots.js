@@ -1,4 +1,4 @@
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://kinggroup44.com";
+import { siteUrl } from "./siteUrl";
 
 export default function robots() {
   return {

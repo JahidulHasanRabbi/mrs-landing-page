@@ -2,15 +2,15 @@
 // Kept separate from the component so copy/asset edits don't touch layout code.
 
 export const VIP_TIERS = [
-  { name: "Bronze", img: "/assets/landing/vip-tiers-icons/1.png" },
-  { name: "Silver", img: "/assets/landing/vip-tiers-icons/2.png" },
-  { name: "Gold", img: "/assets/landing/vip-tiers-icons/3.png" },
-  { name: "Platinum", img: "/assets/landing/vip-tiers-icons/4.png" },
-  { name: "Diamond", img: "/assets/landing/vip-tiers-icons/5.png" },
-  { name: "Emerald", img: "/assets/landing/vip-tiers-icons/6.png" },
-  { name: "Ruby", img: "/assets/landing/vip-tiers-icons/7.png" },
-  { name: "Sapphire", img: "/assets/landing/vip-tiers-icons/8.png" },
-  { name: "Amethyst", img: "/assets/landing/vip-tiers-icons/9.png" },
+  { name: "Starlight", img: "/assets/landing/vip-tiers-icons/1.png" },
+  { name: "Comet", img: "/assets/landing/vip-tiers-icons/2.png" },
+  { name: "Meteor", img: "/assets/landing/vip-tiers-icons/3.png" },
+  { name: "Nebula", img: "/assets/landing/vip-tiers-icons/4.png" },
+  { name: "Galaxy", img: "/assets/landing/vip-tiers-icons/5.png" },
+  { name: "Universe", img: "/assets/landing/vip-tiers-icons/6.png" },
+  { name: "Supernova", img: "/assets/landing/vip-tiers-icons/7.png" },
+  { name: "Cosmic Emperor", img: "/assets/landing/vip-tiers-icons/8.png" },
+  { name: "Cosmic King", img: "/assets/landing/vip-tiers-icons/9.png" },
 ];
 
 export const GAMES = [
