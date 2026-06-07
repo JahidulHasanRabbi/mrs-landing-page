@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { MotionConfig, motion } from "framer-motion";
+import { animate, MotionConfig, motion, useMotionValue, useTransform } from "framer-motion";
 import { VIP_TIERS, GAMES, PARTNERS, TELEGRAM_URL, PLAY_NOW_LINKS } from "./landingData";
 import {
   mono,
@@ -116,6 +116,53 @@ function BadgeTile({ tier, className = "" }) {
   );
 }
 
+// Animated gold glow that orbits the bar's rounded-pill border. Built from a
+// conic-gradient with a single bright sweep that rotates around the bar's
+// center, masked to the border ring via the standard "padding + mask-composite
+// exclude" trick. `useMotionValue` drives the gradient's `from` angle so the
+// sweep moves smoothly without needing CSS @property registration.
+function BorderFlare() {
+  const angle = useMotionValue(0);
+
+  useEffect(() => {
+    const controls = animate(angle, 360, {
+      duration: 7,
+      ease: "linear",
+      repeat: Infinity,
+    });
+    return () => controls.stop();
+  }, [angle]);
+
+  const background = useTransform(
+    angle,
+    (a) =>
+      `conic-gradient(from ${a}deg at 50% 50%,` +
+      "rgba(255,215,0,0) 0%," +
+      "rgba(255,215,0,0) 82%," +
+      "rgba(255,230,120,1) 88%," +
+      "#ffffff 92%," +
+      "rgba(255,230,120,1) 96%," +
+      "rgba(255,215,0,0) 100%)",
+  );
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-[1] rounded-[9999px]"
+      style={{
+        background,
+        padding: "4px",
+        WebkitMask:
+          "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+        WebkitMaskComposite: "xor",
+        maskComposite: "exclude",
+        filter:
+          "drop-shadow(0 0 6px #ffd700) drop-shadow(0 0 14px rgba(255,215,0,0.85))",
+      }}
+    />
+  );
+}
+
 function VipTierBar() {
   return (
     <motion.div
@@ -159,6 +206,7 @@ function VipTierBar() {
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 rounded-[9999px] shadow-[inset_-2px_9px_15.2px_0px_rgba(59,176,48,0.19)]"
         />
+        <BorderFlare />
         {/* Mobile/tablet: a continuous auto-sliding marquee so it's obvious the
          * badges can scroll (a static overflow row gave no hint there was more
          * off-screen). Two identical copies + an x animation of 0 → -50% loop
