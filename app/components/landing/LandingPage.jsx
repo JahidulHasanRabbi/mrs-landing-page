@@ -179,10 +179,12 @@ function VipTierBar() {
           </motion.div>
         </div>
 
-        {/* Desktop: all tiers fit, so spread them evenly with the pop-in cascade. */}
+        {/* Desktop: all tiers fit, so spread them evenly with the pop-in cascade.
+         * Extra horizontal padding keeps the first/last labels clear of the
+         * rounded-pill curve (otherwise "Starlight" / "Cosmic King" clip). */}
         <motion.div
           variants={stagger}
-          className="relative hidden items-center justify-between px-4 py-6 lg:flex"
+          className="relative hidden items-center justify-between px-10 py-6 lg:flex xl:px-14"
         >
           {VIP_TIERS.map((tier) => (
             <motion.div key={tier.name} variants={popIn} className="flex flex-col items-center">
