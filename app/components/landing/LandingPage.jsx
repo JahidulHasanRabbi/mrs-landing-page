@@ -91,7 +91,10 @@ function Hero() {
 function BadgeTile({ tier, className = "" }) {
   return (
     <div
-      className={`group flex w-[76px] shrink-0 cursor-pointer flex-col items-center gap-1 sm:w-[110px] lg:w-auto ${className}`}
+      // Tile widths sized so the longest tier ("Cosmic Emperor", 14 chars in
+      // JetBrains Mono) fits on a single line — uneven 1-line/2-line wrapping
+      // is what made the mobile bar look ragged.
+      className={`group flex w-[100px] shrink-0 cursor-pointer flex-col items-center gap-1 sm:w-[132px] lg:w-auto ${className}`}
     >
       <motion.div
         className="relative size-12 sm:size-16 lg:size-20"
@@ -108,7 +111,7 @@ function BadgeTile({ tier, className = "" }) {
         <Image src={tier.img} alt={tier.name} fill sizes="80px" className="object-contain" />
       </motion.div>
       <span
-        className={`text-[10px] font-bold tracking-[0.5px] text-[#ffd700] transition-[text-shadow,transform] duration-300 group-hover:scale-105 group-hover:[text-shadow:0_0_8px_rgba(255,215,0,0.9)] sm:text-xs sm:tracking-[1.2px] ${mono}`}
+        className={`whitespace-nowrap text-[10px] font-bold tracking-[0.5px] text-[#ffd700] transition-[text-shadow,transform] duration-300 group-hover:scale-105 group-hover:[text-shadow:0_0_8px_rgba(255,215,0,0.9)] sm:text-xs sm:tracking-[1.2px] ${mono}`}
       >
         {tier.name}
       </span>
@@ -148,7 +151,10 @@ function BorderFlare() {
   return (
     <motion.div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-0 z-[1] rounded-[9999px]"
+      // Match the parent's responsive radius: a softer rounded-3xl on mobile
+      // reads as a premium card; the full pill returns at lg where the bar is
+      // wide enough to carry it.
+      className="pointer-events-none absolute inset-0 z-[1] rounded-3xl lg:rounded-[9999px]"
       style={{
         background,
         padding: "4px",
@@ -190,13 +196,16 @@ function VipTierBar() {
 
       <motion.div
         variants={fadeUp}
-        className="relative w-full overflow-hidden rounded-[9999px] border-2 border-[rgba(170,141,39,0.8)] shadow-[0px_0px_8px_6px_rgba(255,215,0,0.15)]"
+        // Softer rounded-3xl on mobile (the stretched horizontal pill read as
+        // awkward at narrow widths); the full pill returns at lg, where the
+        // bar is wide enough to carry the shape.
+        className="relative w-full overflow-hidden rounded-3xl border-2 border-[rgba(170,141,39,0.8)] shadow-[0px_0px_8px_6px_rgba(255,215,0,0.15)] lg:rounded-[9999px]"
       >
         {/* Wide, short radial (bright green center fading to near-black at the
          * edges) — matches the Figma gradient so the badge tiles blend into the
          * bar instead of reading as bright boxes. */}
         <div
-          className="pointer-events-none absolute inset-0 rounded-[9999px]"
+          className="pointer-events-none absolute inset-0 rounded-3xl lg:rounded-[9999px]"
           style={{
             background:
               "radial-gradient(ellipse 52% 52% at 50% 50%, #109d05 8%, #0f7906 31%, #0d5607 54%, #0b3208 77%, #0a2108 88%, #090f09 100%)",
@@ -204,7 +213,7 @@ function VipTierBar() {
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 rounded-[9999px] shadow-[inset_-2px_9px_15.2px_0px_rgba(59,176,48,0.19)]"
+          className="pointer-events-none absolute inset-0 rounded-3xl shadow-[inset_-2px_9px_15.2px_0px_rgba(59,176,48,0.19)] lg:rounded-[9999px]"
         />
         <BorderFlare />
         {/* Mobile/tablet: a continuous auto-sliding marquee so it's obvious the
@@ -286,86 +295,171 @@ function GameCard({ game, isActive, onSelect, onPlay, instant = false }) {
 }
 
 const GAMES_N = GAMES.length;
-// Three back-to-back copies of the game list. We keep the active index inside
-// the middle copy so the centered card always has real neighbours on both
-// sides (no empty gap at the ends); when the index drifts into an outer copy
-// we snap it back to the equivalent middle-copy index with transitions off, so
-// the loop is seamless and feels infinite.
-const GAMES_LOOP = [...GAMES, ...GAMES, ...GAMES];
+// Seven back-to-back copies of GAMES. We keep `active` inside the center copy
+// and normalize back to it after every slide — far more headroom than any
+// real-world swipe needs, so the boundary is effectively unreachable.
+const COPIES = 7;
+const CENTER_COPY = Math.floor(COPIES / 2);
+const CENTER_FIRST = CENTER_COPY * GAMES_N;
+const CENTER_LAST = CENTER_FIRST + GAMES_N - 1;
+const GAMES_LOOP = Array.from({ length: COPIES * GAMES_N }, (_, i) => GAMES[i % GAMES_N]);
 
 function GamesSection() {
-  const [active, setActive] = useState(GAMES_N); // first card of the middle copy
-  const [animate, setAnimate] = useState(false);
-  const [paused, setPaused] = useState(false);
-  const [offset, setOffset] = useState(0);
+  const [active, setActive] = useState(CENTER_FIRST);
+  const [hovered, setHovered] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  // `instant` kills the GameCard scale/glow CSS transitions for one frame
+  // around the loop snap: the formerly-active outer-copy card and the new
+  // active center-copy card swap appearances at the same on-screen pixels
+  // without a visible scale animation.
+  const [instant, setInstant] = useState(false);
+
+  // The track's translateX is a motion value. Framer-motion writes straight
+  // to the DOM on every change, so drag and animation updates never trigger
+  // a React render — that's what keeps the swipe smooth.
+  const x = useMotionValue(0);
+
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
+  const animRef = useRef(null);
+  const wasDragged = useRef(false);
+  // Velocity carried from the most recent drag release into the snap-back
+  // spring, so the slide feels like a continuation of the user's gesture
+  // instead of a fresh animation.
+  const lastVelocity = useRef(0);
+  // The first layout pass and every loop-snap should jump x instantly
+  // instead of animating. Reset to false after the jump runs.
+  const skipNextAnim = useRef(true);
 
-  // Slide the track so the active card sits dead-center in the viewport.
-  // We measure the card's *layout* box (offsetLeft/Width is unaffected by the
-  // CSS transform scale), so centering stays stable as cards pop in and out.
-  const recenter = useCallback(() => {
+  // Auto-advance pauses on mouse hover OR while a drag is in flight. Derived
+  // rather than a single flag so a mouse drag-and-release doesn't clobber the
+  // hover-pause that was already in effect.
+  const paused = hovered || isDragging;
+
+  const targetXFor = useCallback((idx) => {
     const viewport = viewportRef.current;
-    const card = trackRef.current?.children[active];
-    if (!viewport || !card) return;
-    setOffset(viewport.clientWidth / 2 - (card.offsetLeft + card.offsetWidth / 2));
-  }, [active]);
+    const card = trackRef.current?.children[idx];
+    if (!viewport || !card) return 0;
+    return viewport.clientWidth / 2 - (card.offsetLeft + card.offsetWidth / 2);
+  }, []);
 
+  // Drive the track to the active card. Spring with carried velocity gives
+  // the post-drag slide that "released finger" feel; an instant jump is used
+  // on mount and on the invisible loop snap. onComplete normalizes active
+  // back to the center copy whenever it drifts out, keeping the loop endless
+  // without ever exposing the track ends.
   useIsoLayoutEffect(() => {
-    recenter();
-  }, [recenter]);
+    const target = targetXFor(active);
+    animRef.current?.stop();
+    if (skipNextAnim.current) {
+      x.set(target);
+      skipNextAnim.current = false;
+      lastVelocity.current = 0;
+      return;
+    }
+    const v = lastVelocity.current;
+    lastVelocity.current = 0;
+    animRef.current = animate(x, target, {
+      type: "spring",
+      stiffness: 350,
+      damping: 40,
+      velocity: v,
+      restDelta: 0.5,
+      onComplete: () => {
+        if (active < CENTER_FIRST || active > CENTER_LAST) {
+          const normalized =
+            CENTER_FIRST +
+            ((((active - CENTER_FIRST) % GAMES_N) + GAMES_N) % GAMES_N);
+          skipNextAnim.current = true;
+          setInstant(true);
+          setActive(normalized);
+        }
+      },
+    });
+    return () => animRef.current?.stop();
+  }, [active, x, targetXFor]);
 
+  // Re-enable card transitions one paint after a loop snap.
   useEffect(() => {
-    window.addEventListener("resize", recenter);
-    return () => window.removeEventListener("resize", recenter);
-  }, [recenter]);
+    if (!instant) return;
+    const id = requestAnimationFrame(() =>
+      requestAnimationFrame(() => setInstant(false)),
+    );
+    return () => cancelAnimationFrame(id);
+  }, [instant]);
 
-  // Pause auto-advance only for an actual mouse hover. We deliberately avoid
-  // onMouseEnter/Leave here: on touch devices a tap fires a sticky mouseenter
-  // with no matching mouseleave, which left `paused` stuck true and silently
-  // killed the auto-slide on mobile after the first tap.
-  const pauseForMouse = (e) => e.pointerType === "mouse" && setPaused(true);
-  const resumeForMouse = (e) => e.pointerType === "mouse" && setPaused(false);
+  // Resize: snap x to the current active card (no animation).
+  useEffect(() => {
+    const handler = () => {
+      animRef.current?.stop();
+      x.set(targetXFor(active));
+    };
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, [active, x, targetXFor]);
 
-  // Auto-advance one card at a time (the "pop"). Pauses on hover only.
-  // We intentionally do NOT gate this on prefers-reduced-motion: the page
-  // wraps everything in <MotionConfig reducedMotion="never">, so the carousel
-  // must keep sliding to stay consistent. Honoring reduce-motion here (it's
-  // commonly on via iOS Low Power Mode / accessibility) silently froze the
-  // carousel on phones.
-  // Depending on `active` restarts the countdown after every slide — including
-  // a manual card tap — so a click never lands right before a queued auto-tick
-  // and double-advances. Each slide is followed by a fresh 2600ms.
+  // Pause auto-advance only for a real mouse hover. We use pointerType-gated
+  // pointer events instead of onMouseEnter/Leave because on touch devices a
+  // tap fires a sticky mouseenter with no matching mouseleave.
+  const pauseForMouse = (e) => e.pointerType === "mouse" && setHovered(true);
+  const resumeForMouse = (e) => e.pointerType === "mouse" && setHovered(false);
+
+  // Auto-advance one card every 2.6s. Restarts after every active change so
+  // a manual swipe or tap never races a queued tick.
   useEffect(() => {
     if (paused) return;
     const id = setInterval(() => setActive((i) => i + 1), 2600);
     return () => clearInterval(id);
   }, [paused, active]);
 
-  // After an animated move finishes, if we've landed in an outer copy, jump
-  // invisibly to the matching index in the middle copy (same on-screen pixels).
-  const handleTransitionEnd = (e) => {
-    if (e.target !== trackRef.current || e.propertyName !== "transform") return;
-    if (active >= 2 * GAMES_N || active < GAMES_N) {
-      setAnimate(false);
-      setActive(GAMES_N + ((((active - GAMES_N) % GAMES_N) + GAMES_N) % GAMES_N));
-    }
+  // Drag handlers — framer-motion's built-in `drag="x"` owns the gesture.
+  // We just decide what active to snap to once the user lets go.
+  const onDragStart = () => {
+    wasDragged.current = true;
+    setIsDragging(true);
+    animRef.current?.stop();
   };
 
-  // Re-enable transitions after the invisible snap (and on first mount).
+  const onDragEnd = (_e, info) => {
+    setIsDragging(false);
+    const children = trackRef.current?.children;
+    if (!children || children.length < 2) return;
+    const pitch = children[1].offsetLeft - children[0].offsetLeft;
+    if (pitch <= 0) return;
+
+    // Project where x would settle with a touch of inertia, then snap to the
+    // nearest card center. Multiplier picked so a typical flick (~2000 px/s)
+    // carries ~2 cards past the release point — feels natural, not slidey.
+    const projected = x.get() + info.velocity.x * 0.18;
+    const baseX = targetXFor(0); // x value when the first track child is centered
+    const rawIdx = Math.round((baseX - projected) / pitch);
+    const snappedIdx = Math.max(0, Math.min(GAMES_LOOP.length - 1, rawIdx));
+
+    lastVelocity.current = info.velocity.x;
+    setActive(snappedIdx);
+  };
+
+  // Clear wasDragged after the click that follows pointer-up has had a
+  // chance to fire. Without this, the next card tap would be swallowed.
   useEffect(() => {
-    if (animate) return;
-    const id = requestAnimationFrame(() => requestAnimationFrame(() => setAnimate(true)));
-    return () => cancelAnimationFrame(id);
-  }, [animate]);
+    if (isDragging || !wasDragged.current) return;
+    const id = setTimeout(() => {
+      wasDragged.current = false;
+    }, 80);
+    return () => clearTimeout(id);
+  }, [isDragging]);
 
   const current = GAMES[active % GAMES_N];
 
-  // "Play Now" sends the player to a random partner referral link. Chosen at
-  // click time (client-only) so there's no SSR/hydration mismatch.
   const openRandomPlayLink = () => {
+    if (wasDragged.current) return;
     const url = PLAY_NOW_LINKS[Math.floor(Math.random() * PLAY_NOW_LINKS.length)];
     window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  const selectCard = (i) => {
+    if (wasDragged.current) return;
+    setActive(i);
   };
 
   return (
@@ -379,35 +473,41 @@ function GamesSection() {
       <motion.div variants={fadeUp} className="w-full">
         <div
           ref={viewportRef}
-          className="w-full overflow-hidden"
+          className="w-full select-none overflow-hidden"
           onPointerEnter={pauseForMouse}
           onPointerLeave={resumeForMouse}
         >
-          <div
+          <motion.div
             ref={trackRef}
-            onTransitionEnd={handleTransitionEnd}
+            drag="x"
+            dragMomentum={false}
+            dragElastic={0}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
             // Vertical padding must clear the *scaled* active card plus its label
             // — the viewport's overflow-hidden (which hides the off-screen loop
             // cards) would otherwise clip them. The zoom is gentler on mobile
             // (1.12× vs 1.35×), so less headroom is needed there; scaling the
             // padding down also keeps the card + description on one screen.
-            className="flex items-center gap-4 py-4 sm:gap-6 sm:py-6 lg:gap-10 lg:py-20"
-            style={{
-              transform: `translateX(${offset}px)`,
-              transition: animate ? "transform 500ms ease-out" : "none",
-            }}
+            className={`flex items-center gap-4 py-4 sm:gap-6 sm:py-6 lg:gap-10 lg:py-20 [&_img]:pointer-events-none ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+            // `touchAction: pan-y` lets the browser keep vertical page scroll
+            // even though framer-motion's drag is bound to this element.
+            // `willChange: transform` promotes the track to its own
+            // compositor layer so each frame is a cheap GPU composite, not a
+            // re-rasterization of 42 card images.
+            style={{ x, touchAction: "pan-y", willChange: "transform" }}
           >
             {GAMES_LOOP.map((game, i) => (
               <GameCard
                 key={i}
                 game={game}
                 isActive={i === active}
-                instant={!animate}
-                onSelect={() => setActive(i)}
+                instant={instant}
+                onSelect={() => selectCard(i)}
                 onPlay={openRandomPlayLink}
               />
             ))}
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 
