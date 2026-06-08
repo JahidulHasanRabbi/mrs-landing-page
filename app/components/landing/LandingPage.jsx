@@ -169,6 +169,86 @@ function BorderFlare() {
   );
 }
 
+// Mobile/tablet VIP badge marquee — auto-scrolls continuously and is also
+// draggable so users can swipe through the badges at their own pace. After a
+// drag releases, the auto-scroll picks up from wherever the user let go.
+// Two identical copies + a constant left-drift make the loop seamless;
+// dragConstraints clamps drag to one copyWidth either way so the user can
+// never expose the empty space beyond the track.
+function VipMarqueeMobile() {
+  const x = useMotionValue(0);
+  const trackRef = useRef(null);
+  const animRef = useRef(null);
+  const [copyWidth, setCopyWidth] = useState(0);
+
+  // Linear drift from current x toward -copyWidth; on natural completion,
+  // jump back to 0 and restart. Duration scales with remaining distance so
+  // the speed (px/s) is constant across drag-resumes.
+  const startScroll = useCallback(() => {
+    if (copyWidth === 0) return;
+    animRef.current?.stop();
+    let xv = x.get();
+    // Defensive: if a resize left x outside the seamless range, wrap it in.
+    if (xv < -copyWidth || xv > 0) {
+      xv = ((xv % copyWidth) + copyWidth) % copyWidth;
+      if (xv > 0) xv -= copyWidth;
+      x.set(xv);
+    }
+    const remaining = xv + copyWidth;
+    const duration = (remaining / copyWidth) * 18;
+    animRef.current = animate(x, -copyWidth, {
+      duration: Math.max(0.01, duration),
+      ease: "linear",
+      onComplete: () => {
+        x.set(0);
+        startScroll();
+      },
+    });
+  }, [copyWidth, x]);
+
+  useIsoLayoutEffect(() => {
+    const measure = () => {
+      const firstCopy = trackRef.current?.children[0];
+      if (!firstCopy) return;
+      setCopyWidth(firstCopy.offsetWidth);
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  useEffect(() => {
+    startScroll();
+    return () => animRef.current?.stop();
+  }, [startScroll]);
+
+  return (
+    <div className="relative overflow-hidden py-4 sm:py-6 lg:hidden">
+      <motion.div
+        ref={trackRef}
+        drag="x"
+        dragMomentum={false}
+        dragElastic={0.08}
+        dragConstraints={{ left: -copyWidth, right: 0 }}
+        onDragStart={() => animRef.current?.stop()}
+        onDragEnd={() => startScroll()}
+        className="flex w-max cursor-grab active:cursor-grabbing [&_img]:pointer-events-none"
+        // touchAction: pan-y keeps vertical page scroll working even though
+        // framer-motion's drag is bound to this element.
+        style={{ x, touchAction: "pan-y", willChange: "transform" }}
+      >
+        {[0, 1].map((copy) => (
+          <div key={copy} aria-hidden={copy === 1 || undefined} className="flex shrink-0">
+            {VIP_TIERS.map((tier) => (
+              <BadgeTile key={tier.name} tier={tier} className="px-2.5 sm:px-3" />
+            ))}
+          </div>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
 function VipTierBar() {
   return (
     <motion.div
@@ -216,25 +296,9 @@ function VipTierBar() {
           className="pointer-events-none absolute inset-0 rounded-3xl shadow-[inset_-2px_9px_15.2px_0px_rgba(59,176,48,0.19)] lg:rounded-[9999px]"
         />
         <BorderFlare />
-        {/* Mobile/tablet: a continuous auto-sliding marquee so it's obvious the
-         * badges can scroll (a static overflow row gave no hint there was more
-         * off-screen). Two identical copies + an x animation of 0 → -50% loop
-         * seamlessly; the per-tile horizontal padding keeps the seam gap even. */}
-        <div className="relative overflow-hidden py-4 sm:py-6 lg:hidden">
-          <motion.div
-            className="flex w-max"
-            animate={{ x: ["0%", "-50%"] }}
-            transition={{ duration: 18, ease: "linear", repeat: Infinity }}
-          >
-            {[0, 1].map((copy) => (
-              <div key={copy} aria-hidden={copy === 1 || undefined} className="flex shrink-0">
-                {VIP_TIERS.map((tier) => (
-                  <BadgeTile key={tier.name} tier={tier} className="px-2.5 sm:px-3" />
-                ))}
-              </div>
-            ))}
-          </motion.div>
-        </div>
+        {/* Mobile/tablet: continuous auto-scroll + manual swipe (see
+         * VipMarqueeMobile). */}
+        <VipMarqueeMobile />
 
         {/* Desktop: all tiers fit, so spread them evenly with the pop-in cascade.
          * Extra horizontal padding keeps the first/last labels clear of the
@@ -258,17 +322,26 @@ const GAME_TITLE_GLOW = { textShadow: "0px 0px 15px #826e00, 0px 0px 7.5px #ffd7
 
 function GameCard({ game, isActive, onSelect, onPlay, instant = false }) {
   return (
-    <button
-      type="button"
-      // A side card just centers itself; the centered card (which shows the
-      // "Play Now" pill) launches a random partner link instead.
-      onClick={isActive ? onPlay : onSelect}
+    // Outer is a div (not a button) so the real Play Now button can nest
+    // inside without invalid HTML. Tapping the card body just selects it —
+    // launching the partner link is now reserved for the explicit Play Now
+    // pill, so users don't accidentally open a new tab by tapping the image.
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          onSelect();
+        }
+      }}
       aria-current={isActive || undefined}
       // `instant` kills the scale/glow transitions during the loop's invisible
       // copy-snap. Because the snap moves "active" to a different DOM node, an
       // enabled transition would visibly animate the snapped card up from
       // scale-90/no-border to its active size + glow — the loop-point glitch.
-      className={`flex shrink-0 flex-col items-center gap-3 outline-none sm:gap-4 ${instant ? "" : "transition-transform duration-500 ease-out"} ${isActive ? "z-10 scale-[1.12] lg:scale-[1.35]" : "scale-90 opacity-90"
+      className={`flex shrink-0 cursor-pointer flex-col items-center gap-3 outline-none sm:gap-4 ${instant ? "" : "transition-transform duration-500 ease-out"} ${isActive ? "z-10 scale-[1.12] lg:scale-[1.35]" : "scale-90 opacity-90"
         }`}
     >
       <div
@@ -279,9 +352,16 @@ function GameCard({ game, isActive, onSelect, onPlay, instant = false }) {
       >
         <Image src={game.img} alt={game.name} fill sizes="265px" className="object-cover" />
         {isActive && (
-          <span className="absolute inset-x-3 bottom-3 rounded-full bg-[#ffd700] px-4 py-2.5 text-center text-sm font-bold text-[#3a3000] drop-shadow-[0px_0px_15px_rgba(255,215,0,0.5)] sm:px-6 sm:py-3 sm:text-lg">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onPlay();
+            }}
+            className="absolute inset-x-3 bottom-3 rounded-full bg-[#ffd700] px-4 py-2.5 text-center text-sm font-bold text-[#3a3000] drop-shadow-[0px_0px_15px_rgba(255,215,0,0.5)] sm:px-6 sm:py-3 sm:text-lg"
+          >
             <span className={sora}>Play Now</span>
-          </span>
+          </button>
         )}
       </div>
       <span
@@ -290,7 +370,7 @@ function GameCard({ game, isActive, onSelect, onPlay, instant = false }) {
       >
         {game.name}
       </span>
-    </button>
+    </div>
   );
 }
 
