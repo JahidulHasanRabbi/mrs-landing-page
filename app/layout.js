@@ -1,4 +1,5 @@
 import { Inter, JetBrains_Mono, Sora } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import { siteUrl } from "./siteUrl";
 
@@ -74,6 +75,18 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.variable} ${jetbrainsMono.variable} ${sora.variable} antialiased bg-black`}
       >
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-HQPH3XB67L"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-HQPH3XB67L');
+          `}
+        </Script>
         {children}
       </body>
     </html>

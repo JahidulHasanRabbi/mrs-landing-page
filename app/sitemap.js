@@ -9,6 +9,8 @@ const ROUTES = [
   { path: "/terms-of-service", priority: 0.3 },
 ];
 
+export const dynamic = "force-static";
+
 export default function sitemap() {
   return ROUTES.map(({ path, priority }) => ({
     url: `${siteUrl}${path}`,
