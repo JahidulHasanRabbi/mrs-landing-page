@@ -678,7 +678,7 @@ function PartnerCard({ partner }) {
           <motion.a
             href={partner.claimUrl}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             animate={ctaShake(0)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
@@ -690,7 +690,7 @@ function PartnerCard({ partner }) {
           <motion.a
             href={TELEGRAM_URL}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             animate={ctaShake(0.4)}
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}

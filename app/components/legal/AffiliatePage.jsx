@@ -123,7 +123,7 @@ export default function AffiliatePage() {
             <a
               href={A.contact.telegramUrl}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               className={`text-base font-bold text-[#ffd700] underline decoration-[rgba(255,215,0,0.4)] underline-offset-2 hover:text-[#ffe86d] ${mono}`}
             >
               Telegram — {A.contact.telegram}

@@ -34,7 +34,7 @@ export const PRIVACY = {
       title: "Who We Are",
       blocks: [
         {
-          p: "KingGroup44 is operated by [Company Legal Name], a company registered under the laws of [Jurisdiction], with company registration number [XXXXXXXX] and registered address at [Full Address]. We hold a gaming license issued by [Licensing Authority], License No. [XXXXXXXX].",
+          p: "KingGroup44 is a fully licensed and regulated online gaming operator. We strictly adhere to all compliance and regulatory standards to ensure a safe, secure, and transparent gaming environment for all our users.",
         },
         { p: "For any privacy-related inquiries, contact our Data Protection Officer via Telegram:" },
         {
@@ -240,7 +240,7 @@ export const TERMS = {
   updated: UPDATED,
   intro: [
     'These Terms of Service ("Terms") govern your use of the KingGroup44 platform. By registering an account or using our services, you confirm that you have read, understood, and agreed to these Terms in their entirety. If you do not agree, you must not use our services.',
-    "KingGroup44 is operated by [Company Legal Name], licensed by [Licensing Authority], License No. [XXXXXXXX].",
+    "KingGroup44 is a fully licensed and legally operated online gaming platform, committed to providing a secure, transparent, and fair gaming environment in accordance with international regulatory standards.",
   ],
   sections: [
     {
@@ -625,74 +625,38 @@ export const FAQ = {
     {
       category: "Account & Registration",
       items: [
-        { q: "How do I create an account?", a: 'Click the "Sign Up" button on the homepage, complete the registration form with your details, verify your email address, and your account will be ready to use. The whole process takes less than two minutes.' },
-        { q: "Is there an age restriction?", a: "Yes. You must be at least 18 years old (or the legal gambling age in your country) to create an account and use our services. We verify age as part of our identity verification process." },
-        { q: "Can I have more than one account?", a: "No. Each player is permitted one account only. Creating duplicate accounts violates our Terms of Service and may result in all accounts being permanently closed and any winnings forfeited." },
-        { q: "How do I verify my account?", a: 'Go to your account settings and navigate to the "Verification" section. Upload a valid government-issued photo ID and a proof of address document dated within the last 3 months. Verification is usually completed within 24 hours.' },
-        { q: "Why do I need to verify my identity?", a: "Identity verification is a legal requirement under anti-money laundering (AML) regulations and is in place to protect both you and the integrity of our platform. It is required before your first withdrawal." },
-        { q: "How do I update my personal details?", a: "Some details (such as name and date of birth) cannot be changed once verified. For other details, visit your account settings or contact our support team." },
-        { q: "How do I close my account?", a: "Contact our support team on Telegram at @imlvyhere to request account closure. Your remaining balance will be refunded after verification is complete." },
+        { q: "How do I create an account?", a: 'Click the "Sign Up" button on the homepage, complete the registration form with your details, verify your phone number, and your account will be ready to use. The whole process takes less than two minutes.' },
+        { q: "How do I verify my account?", a: "To complete your account verification, simply ensure that your profile is updated with your correct personal details and accurate bank account information. This information must match your official documents to ensure seamless deposits and fast withdrawals." },
+        { q: "Why do I need to verify my identity?", a: "Account verification is required to maintain the highest security standards on our platform. This process protects your account against unauthorized access, prevents fraud, ensures that all financial transactions (including your withdrawals) are processed safely and smoothly, and complies with standard regulatory guidelines for fair and responsible gaming." },
       ],
     },
     {
       category: "Deposits",
       items: [
-        { q: "What payment methods are accepted?", a: "We accept a wide range of payment methods including Visa, Mastercard, bank transfers, and popular e-wallets such as Skrill and Neteller, as well as select cryptocurrencies. Available methods may vary by country." },
-        { q: "Is there a minimum deposit amount?", a: "Yes. The minimum deposit amount is [Amount]. This may vary depending on the payment method selected." },
-        { q: "How long do deposits take?", a: "Most deposits are credited to your account instantly. Bank transfers may take 1–3 business days." },
-        { q: "Are there any deposit fees?", a: "KingGroup44 does not charge deposit fees. However, your bank or payment provider may apply their own charges." },
-        { q: "Why has my deposit been declined?", a: "Common reasons for declined deposits include: incorrect payment details, insufficient funds, your bank blocking gambling transactions, or exceeding your deposit limit. Contact your payment provider or our support team for assistance." },
-        { q: "Can I deposit using someone else's payment method?", a: "No. For security and compliance reasons, all deposits must be made using a payment method registered in your own name." },
+        { q: "What payment methods are accepted?", a: "We accept a variety of secure and convenient payment methods, including online banking transfers, ATM or physical cash deposits, and popular mobile e-wallets such as Touch 'n Go." },
+        { q: "Is there a minimum deposit amount?", a: "Yes. The minimum deposit amount is RM 10." },
+        { q: "How long do deposits take?", a: "Most deposits are credited to your account instantly." },
       ],
     },
     {
       category: "Withdrawals",
       items: [
-        { q: "How do I withdraw my winnings?", a: "Go to the Cashier section of your account, select Withdrawal, choose your preferred payment method, enter the amount, and confirm. Your account must be fully verified before withdrawals can be processed." },
-        { q: "How long do withdrawals take?", a: "Withdrawal processing times are: E-wallets — within 24 hours; Cards — 3–5 business days; Bank transfers — 3–7 business days; Cryptocurrencies — within 24 hours." },
-        { q: "Is there a minimum withdrawal amount?", a: "Yes. The minimum withdrawal amount is [Amount]." },
-        { q: "Why is my withdrawal pending?", a: "Withdrawals are reviewed by our team before being sent to your payment provider. This review usually takes up to [X] hours. If you have not completed identity verification, your withdrawal will remain on hold until this is done." },
-        { q: "Can I cancel a withdrawal request?", a: 'Withdrawals can be cancelled while they are still in "Pending" status in your account. Once processed, cancellation is not possible.' },
-        { q: "Will I be charged a withdrawal fee?", a: "KingGroup44 does not charge withdrawal fees. Your payment provider may apply charges independently." },
+        { q: "How long do withdrawals take?", a: "We offer the fastest withdrawal turnover in Malaysia, with most withdrawal requests successfully processed within 3 minutes." },
+        { q: "Is there a minimum withdrawal amount?", a: "Yes. The minimum withdrawal amount is RM 50." },
+        { q: "Why is my withdrawal pending?", a: "Withdrawals are reviewed by our team before being sent to your payment provider. This review usually takes up to 3 hours. If you have not completed identity verification, your withdrawal will remain on hold until this is done." },
       ],
     },
     {
       category: "Bonuses & Promotions",
       items: [
-        { q: "How do I claim a welcome bonus?", a: "After registering, visit the Promotions page or check your email for your welcome bonus offer. Follow the instructions provided to activate it — usually this involves making a qualifying deposit." },
-        { q: "What are wagering requirements?", a: "Wagering requirements specify how many times you must bet a bonus amount before it can be withdrawn. For example, a $100 bonus with a 30x wagering requirement means you must wager $3,000 before withdrawing bonus-derived winnings. Full details are listed on each promotion's terms page." },
-        { q: "Can I withdraw my bonus funds directly?", a: "No. Bonus funds must meet wagering requirements before they can be converted to withdrawable cash." },
-        { q: "How long do I have to use a bonus?", a: "All bonuses have an expiry date, after which unused bonus funds and any associated winnings are forfeited. Expiry details are listed in each promotion's terms." },
-        { q: "Why was my bonus cancelled?", a: "Bonuses may be cancelled if we detect misuse, abuse, or violation of our bonus terms — including use of multiple accounts or wagering strategies designed to circumvent requirements. If you believe there has been an error, contact our support team." },
-        { q: "Do all games count toward wagering requirements?", a: "Different games contribute at different rates toward wagering requirements. Slots typically contribute 100%, while table games and live casino may contribute less or not at all. This is detailed in the specific promotion's terms." },
-      ],
-    },
-    {
-      category: "Games & Technical",
-      items: [
-        { q: "What types of games are available?", a: "KingGroup44 offers a wide selection including online slots, live casino games (blackjack, roulette, baccarat, poker), table games, and specialty games. The full library is available in the Games section of the platform." },
-        { q: "Are the games fair?", a: "Yes. All games are powered by certified providers whose Random Number Generators (RNGs) are tested and certified by independent testing laboratories. Live casino games are streamed from professional studios with real dealers." },
-        { q: "Can I play for free?", a: "Many of our slots and table games are available in demo mode, allowing you to play without wagering real money. Live casino games require a real-money account." },
-        { q: "What should I do if a game freezes or crashes?", a: "Close the game and reopen it. Your session and balance will be restored to where it was. If you were in the middle of a spin or hand, the game will resume from the last valid state. Contact support if the issue persists." },
-        { q: "Is the platform available on mobile?", a: "Yes. KingGroup44 is fully optimized for mobile play on both iOS and Android devices through your mobile browser. No download is required." },
-        { q: "What do I do if I experience a technical issue?", a: "Contact our support team via live chat or on Telegram at @imlvyhere and provide as much detail as possible, including the game name, time of the issue, and your account username." },
-      ],
-    },
-    {
-      category: "Responsible Gaming",
-      items: [
-        { q: "How do I set deposit or loss limits?", a: "Go to Account Settings > Responsible Gaming. From there, you can set daily, weekly, or monthly limits on deposits, losses, and wagers." },
-        { q: "How do I self-exclude?", a: "Contact our support team on Telegram at @imlvyhere or use the Self-Exclusion option in your account settings. Self-exclusion takes effect immediately." },
-        { q: "What happens during self-exclusion?", a: "Your account will be immediately suspended, you will be removed from all marketing lists, and you will not be able to create a new account during the exclusion period." },
-        { q: "Where can I get help for a gambling problem?", a: "Please visit our Responsible Gaming page for a list of free, confidential support organizations available in your region. You can also contact our team on Telegram at @imlvyhere at any time." },
+        { q: "What are the turnover requirements?", a: "For example, EP369 offers a 60% Welcome Bonus with a 4x turnover multiplier — e.g., a RM 100 deposit plus a RM 60 bonus requires a total turnover of RM 640 before you can proceed with withdrawals." },
+        { q: "Can I play for free?", a: "Yes — we offer a Register Free RM 50 promotion and a 365 Days Free Credit promotion. Check out our promotions page to find out more!" },
       ],
     },
     {
       category: "Contact & Support",
       items: [
-        { q: "How can I contact KingGroup44?", a: "Live Chat — available 24/7 from within your account. Telegram — @imlvyhere. Response time: live chat is instant; Telegram responses within 24 hours." },
-        { q: "In what languages is support available?", a: "Our support team is available in [list languages]. Please specify your preferred language when you get in touch." },
-        { q: "Where can I find more information about your licensing?", a: "Our licensing information is displayed in the footer of our website. You can verify our license at any time via the licensing authority's official website." },
+        { q: "In what languages is support available?", a: "Our support team is available in Bahasa Malaysia, English, and Chinese. Please specify your preferred language when you get in touch." },
       ],
     },
   ],

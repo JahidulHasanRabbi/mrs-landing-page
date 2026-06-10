@@ -87,7 +87,7 @@ export default function ResponsibleGamingPage() {
             key={s.name}
             href={s.url}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             variants={fadeUp}
             whileHover={{ y: -4 }}
             className="relative overflow-hidden rounded-xl border border-[rgba(170,141,39,0.5)] p-4 text-center transition-colors hover:border-[#ffd700]"
@@ -119,7 +119,7 @@ export default function ResponsibleGamingPage() {
             key={org.name}
             href={org.url}
             target="_blank"
-            rel="noopener noreferrer"
+            rel="nofollow noopener noreferrer"
             variants={fadeUp}
             whileHover={{ x: 4 }}
             className="group relative flex flex-wrap items-center justify-between gap-2 overflow-hidden rounded-xl border border-[rgba(170,141,39,0.45)] px-5 py-4 transition-colors hover:border-[#ffd700]"
@@ -157,7 +157,7 @@ export default function ResponsibleGamingPage() {
             <a
               href={R.help.telegramUrl}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="nofollow noopener noreferrer"
               className={`text-base font-bold text-[#ffd700] underline decoration-[rgba(255,215,0,0.4)] underline-offset-2 hover:text-[#ffe86d] ${mono}`}
             >
               Telegram — {R.help.telegram}

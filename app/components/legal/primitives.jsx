@@ -224,6 +224,8 @@ export function Callout({ title, lines }) {
             {line.href ? (
               <a
                 href={line.href}
+                target={line.href?.startsWith("http") ? "_blank" : undefined}
+                rel={line.href?.startsWith("http") ? "nofollow noopener noreferrer" : undefined}
                 className={`text-sm font-bold text-[#ffd700] underline decoration-[rgba(255,215,0,0.4)] underline-offset-2 transition-colors hover:text-[#ffe86d] ${mono}`}
               >
                 {line.value}
@@ -401,7 +403,7 @@ export function CtaButton({ href, children, icon }) {
     <motion.a
       href={href}
       target={href?.startsWith("http") ? "_blank" : undefined}
-      rel={href?.startsWith("http") ? "noopener noreferrer" : undefined}
+      rel={href?.startsWith("http") ? "nofollow noopener noreferrer" : undefined}
       whileHover={{ scale: 1.04 }}
       whileTap={{ scale: 0.96 }}
       className={`relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-lg border border-[#6a5b0a] bg-[#ffd700] px-7 py-3.5 text-sm font-extrabold uppercase tracking-[1.2px] text-[#3a3000] ${mono}`}
