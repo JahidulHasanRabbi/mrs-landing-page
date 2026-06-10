@@ -350,7 +350,7 @@ function GameCard({ game, isActive, onSelect, onPlay, instant = false }) {
             : ""
           }`}
       >
-        <Image src={game.img} alt={game.name} fill sizes="265px" className="object-cover" />
+        <Image src={game.img} alt={game.name} fill sizes="265px" className="object-cover" priority={isActive} />
         {isActive && (
           <button
             type="button"
